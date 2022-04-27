@@ -13,7 +13,7 @@ public class Study {
     private Long studyId;
 
     @ManyToOne
-    @JoinColumn(name ="user_id")
+    @JoinColumn(name ="user_id",nullable=false)
     private Long userId;
 
     @Column(name="start_at",nullable=false)
