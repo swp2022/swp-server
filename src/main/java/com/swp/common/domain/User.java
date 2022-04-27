@@ -6,10 +6,12 @@ import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
-public class users {
+@Table(name = "users")
+public class User {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "user_id",nullable = false)
-    private Long user_id;
+    private Long userId;
 
     @Column(name="email",length=100,nullable = false,unique = true)
     private String email;
@@ -19,9 +21,9 @@ public class users {
 
     @Column(name="created_at",nullable=false)
     @CreatedDate
-    private LocalDateTime created_at;
+    private LocalDateTime createdAt;
 
-    @Column(name="deleted_at")
-    private LocalDateTime deleted_at;
+    @Column(name="deleted_at", nullable = true)
+    private LocalDateTime deletedAt;
 
 }
