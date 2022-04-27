@@ -30,5 +30,5 @@ public class Board {
     private LocalDateTime createdAt;
 
     @OneToMany( mappedBy = "board")
-    private List<Comment> commentList = new ArrayList<Comment>();
+    private List<Comment> commentList = new ArrayList<>();
 }

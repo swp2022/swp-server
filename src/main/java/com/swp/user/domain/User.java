@@ -28,5 +28,5 @@ public class User {
     private LocalDateTime deletedAt;
 
     @OneToMany( mappedBy = "user")
-    private List<Board> boardList = new ArrayList<Board>();
+    private List<Board> boardList = new ArrayList<>();
 }
