@@ -1,5 +1,4 @@
-package com.swp.common.domain;
-
+package com.swp.study.domain;
 import javax.persistence.*;
 
 @Entity
@@ -12,11 +11,11 @@ public class StudyLog {
 
     @ManyToOne
     @JoinColumn(name ="study_id",nullable = false)
-    private Long studyId;
+    private Study study;
 
     @Column(name="recorded_time",nullable=false)
     private Long recordedTime;
 
     @Column(name="percentage",nullable = false)
-    private double percentage;
+    private Double percentage;
 }

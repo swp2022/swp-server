@@ -1,6 +1,6 @@
-package com.swp.common.domain;
+package com.swp.study.domain;
+import com.swp.user.domain.User;
 import org.springframework.data.annotation.CreatedDate;
-
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
@@ -13,8 +13,8 @@ public class Study {
     private Long studyId;
 
     @ManyToOne
-    @JoinColumn(name ="user_id",nullable=false)
-    private Long userId;
+    @JoinColumn(name ="user_id",nullable = false)
+    private User user;
 
     @Column(name="start_at",nullable=false)
     @CreatedDate
