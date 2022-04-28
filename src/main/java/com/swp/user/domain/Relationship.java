@@ -8,11 +8,11 @@ import java.io.Serializable;
 public class Relationship {
     @Id
     @ManyToOne
-    @JoinColumn(name="from_user_id",referencedColumnName = "user_id",nullable = false)
+    @JoinColumn(name="from_user_id",nullable = false)
     private User fromUser;
 
     @Id
     @ManyToOne
-    @JoinColumn(name="to_user_id",referencedColumnName = "user_id",nullable = false)
+    @JoinColumn(name="to_user_id",nullable = false)
     private User toUser;
 }
