@@ -13,7 +13,7 @@ public class RelationshipId implements Serializable {
 
     @Override
     public boolean equals(Object obj) {
-        if(obj == null || this.getClass()!=obj.getClass())
+        if(obj == null || !(obj instanceof RelationshipId))
             return false;
         return (((RelationshipId) obj).fromUser .equals( this.fromUser )&& ((RelationshipId) obj).toUser.equals( this.toUser) );
     }
