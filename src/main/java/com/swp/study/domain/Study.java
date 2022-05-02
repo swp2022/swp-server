@@ -11,7 +11,7 @@ public class Study {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "study_id",nullable = false)
-    private Long studyId;
+    private Integer studyId;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name ="user_id",nullable = false)

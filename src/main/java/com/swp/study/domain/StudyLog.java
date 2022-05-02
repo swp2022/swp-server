@@ -6,16 +6,16 @@ import javax.persistence.*;
 public class StudyLog {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "study_log_id",nullable = false)
-    private Long studyLogId;
+    @Column(name = "study_log_id", nullable = false)
+    private Integer studyLogId;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name ="study_id",nullable = false)
     private Study study;
 
-    @Column(name="recorded_time",nullable=false)
+    @Column(name = "recorded_time", nullable = false)
     private Long recordedTime;
 
-    @Column(name="percentage",nullable = false)
+    @Column(name = "percentage",nullable = false)
     private Double percentage;
 }
