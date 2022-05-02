@@ -1,6 +1,5 @@
 package com.swp.user.domain;
 import javax.persistence.*;
-import java.io.Serializable;
 
 @Entity
 @Table(name = "relationships")
