@@ -9,7 +9,7 @@ public class StudyLog {
     @Column(name = "study_log_id",nullable = false)
     private Long studyLogId;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name ="study_id",nullable = false)
     private Study study;
 

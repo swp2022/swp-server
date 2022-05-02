@@ -15,11 +15,11 @@ public class Board extends CreatedAtEntity {
     @Column(name = "board_id", nullable = false)
     private Long boardId;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name ="study_id", nullable = false)
     private Study study;
 

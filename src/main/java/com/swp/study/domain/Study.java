@@ -13,7 +13,7 @@ public class Study {
     @Column(name = "study_id",nullable = false)
     private Long studyId;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name ="user_id",nullable = false)
     private User user;
 
