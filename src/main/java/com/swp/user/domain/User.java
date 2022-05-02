@@ -11,16 +11,19 @@ import java.util.List;
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "user_id",nullable = false)
+    @Column(name = "user_id", nullable = false)
     private Long userId;
 
-    @Column(name="email",length=100,nullable = false,unique = true)
+    @Column(name="email" ,length = 100, nullable = false, unique = true)
     private String email;
 
-    @Column(name="nickname",length=100,nullable=false,unique = true)
+    @Column(name="nickname", length = 100, nullable = false, unique = true)
     private String nickname;
 
-    @Column(name="created_at",nullable=false)
+    @Column(name = "profile_image", nullable = true, length = 1000)
+    private String profileImage;
+
+    @Column(name="created_at", nullable = false)
     @CreatedDate
     private LocalDateTime createdAt;
 
