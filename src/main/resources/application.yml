@@ -4,7 +4,7 @@ spring:
     database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
     open-in-view: false
     hibernate:
-      ddl-auto: none
+      ddl-auto: validate
     properties:
       hibernate:
         dialect: org.hibernate.dialect.MySQL5InnoDBDialect
@@ -14,3 +14,31 @@ spring:
     username: ${DATASOURCE_USERNAME}
     password: ${DATASOURCE_PASSWORD}
     driver-class-name: com.mysql.cj.jdbc.Driver
+
+  security:
+    oauth2.client:
+      registration:
+        kakao:
+          client-id: ${CLIENT_ID}
+          client-secret: ${CLIENT_SECRET}
+          redirect-uri: "{baseUrl}/login/oauth2/code/{registrationId}"
+          client-authentication-method: POST
+          authorization-grant-type: authorization_code
+          scope:
+            - account_email
+            - profile_nickname
+            - profile_image
+          client-name: Kakao
+      provider:
+        kakao:
+          authorization-uri: https://kauth.kakao.com/oauth/authorize
+          token-uri: https://kauth.kakao.com/oauth/token
+          user-info-uri: https://kapi.kakao.com/v2/user/me
+          user-name-attribute: id
+
+jwt.Secret: '${JWT_SECRET}'
+
+app.auth:
+  tokenSecret: ${TOKEN_SECRET}
+  tokenExpiry: 180000
+  refreshTokenExpiry: 604800000
