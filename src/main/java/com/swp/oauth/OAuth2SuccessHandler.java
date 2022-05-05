@@ -17,8 +17,10 @@ import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 @Component
-public class OAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
-	private static final String REDIRECTION_URI = "http://localhost:3000/login/oauth2/code/kakao";
+public class OAuth2SuccessHandler implements AuthenticationSuccessHandler {
+
+	@Value("${frontend.redirect-uri}")
+	private String REDIRECTION_URI;
 
 	// TODO: JWT Token 발행 및 전송
 	@Override
