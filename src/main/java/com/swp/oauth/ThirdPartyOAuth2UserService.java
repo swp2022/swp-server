@@ -16,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.swp.oauth.dto.OAuth2UserInfo;
 import com.swp.oauth.dto.OAuth2UserInfoFactory;
+import com.swp.user.domain.Role;
 import com.swp.user.domain.User;
 import com.swp.user.domain.UserRepository;
 
@@ -51,9 +52,9 @@ public class ThirdPartyOAuth2UserService implements OAuth2UserService<OAuth2User
 			attributes, "id");
 	}
 
-	// TODO: Register, update 는 SuccessHandler 안으로 옮길 예정
 	private User register(OAuth2UserInfo userInfo, OAuth2UserRequest userRequest) {
 		return userRepository.save(User.builder()
+			.role(Role.USER)
 			.email(userInfo.getEmail())
 			.nickname(userInfo.getNickname())
 			.profileImage(userInfo.getProfileImage())

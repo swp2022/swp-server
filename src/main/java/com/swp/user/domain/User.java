@@ -6,6 +6,8 @@ import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -24,10 +26,15 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 public class User extends CreatedAtEntity {
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "user_id", nullable = false)
 	private Integer id;
+
+	@Column(nullable = false)
+	@Enumerated(EnumType.STRING)
+	private Role role;
 
 	@Column(name = "email", length = 100, nullable = false, unique = true)
 	private String email;
@@ -51,7 +58,8 @@ public class User extends CreatedAtEntity {
 	private List<Board> boardList = new ArrayList<>();
 
 	@Builder
-	public User(String email, String nickname, String profileImage, String provider, String providerId) {
+	public User(Role role, String email, String nickname, String profileImage, String provider, String providerId) {
+		this.role = role;
 		this.email = email;
 		this.nickname = nickname;
 		this.profileImage = profileImage;

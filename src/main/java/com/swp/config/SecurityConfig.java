@@ -30,33 +30,4 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 			.and()
 			.successHandler(successHandler);
 	}
-
-	/*@Bean
-	public ClientRegistrationRepository clientRegistrationRepository(OAuth2ClientProperties oAuth2ClientProperties) {
-
-		List<ClientRegistration> registrations = oAuth2ClientProperties.getRegistration().keySet().stream()
-			.map(client -> getRegistration(oAuth2ClientProperties, client))
-			.filter(Objects::nonNull).collect(Collectors.toList());
-
-		return new InMemoryClientRegistrationRepository(registrations);
-	}
-
-	public ClientRegistration getRegistration(OAuth2ClientProperties oAuth2ClientProperties, String client) {
-
-		OAuth2ClientProperties.Registration registration = oAuth2ClientProperties.getRegistration().get(client);
-		String clientId = registration.getClientId();
-		String clientSecret = registration.getClientSecret();
-
-		if (clientId == null) {
-			return null;
-		}
-
-		if ("kakao".equals(client)) {
-			return ThirdPartyOAuth2Provider.KAKAO.getBuilder(client)
-				.clientId(clientId)
-				.clientSecret(clientSecret).build();
-		}
-		return null;
-	}*/
-
 }

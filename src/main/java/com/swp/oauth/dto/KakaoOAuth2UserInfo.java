@@ -7,7 +7,7 @@ import lombok.Getter;
 @Getter
 public class KakaoOAuth2UserInfo extends OAuth2UserInfo {
 
-	private Long id;
+	private final Long id;
 
 	public KakaoOAuth2UserInfo(Map<String, Object> attributes) {
 		super((Map<String, Object>)attributes.get("kakao_account"));
@@ -21,16 +21,16 @@ public class KakaoOAuth2UserInfo extends OAuth2UserInfo {
 
 	@Override
 	public String getEmail() {
-		return (String)attributes.get("email");
+		return attributes.get("email").toString();
 	}
 
 	@Override
 	public String getNickname() {
-		return (String)((Map<String, Object>)attributes.get("profile")).get("nickname");
+		return ((Map<String, Object>)attributes.get("profile")).get("nickname").toString();
 	}
 
 	@Override
 	public String getProfileImage() {
-		return (String)((Map<String, Object>)attributes.get("profile")).get("thumbnail_image_url");
+		return ((Map<String, Object>)attributes.get("profile")).get("thumbnail_image_url").toString();
 	}
 }

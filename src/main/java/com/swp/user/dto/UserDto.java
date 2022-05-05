@@ -5,6 +5,8 @@ import javax.validation.constraints.Email;
 
 import org.springframework.data.annotation.ReadOnlyProperty;
 
+import com.swp.user.domain.Role;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -18,6 +20,8 @@ public class UserDto {
 
 	@ReadOnlyProperty
 	private Integer id;
+	@ReadOnlyProperty
+	private Role role;
 	@Email
 	@Column(nullable = false, unique = true)
 	private String email;
