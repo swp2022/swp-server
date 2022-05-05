@@ -38,18 +38,20 @@ public class ThirdPartyOAuth2UserService implements OAuth2UserService<OAuth2User
 
 	private OAuth2User handleResponse(OAuth2User oAuth2User, OAuth2UserRequest userRequest) {
 		String registrationId = userRequest.getClientRegistration().getRegistrationId();
-		Map<String, Object> attributes = oAuth2User.getAttributes();
-		OAuth2UserInfo userInfo = OAuth2UserInfoFactory.getOAuth2UserInfo(registrationId, attributes);
-
-		System.out.println("attributes = " + attributes);
+		String userNameAttributeName = userRequest.getClientRegistration()
+			.getProviderDetails()
+			.getUserInfoEndpoint()
+			.getUserNameAttributeName();
+		Map<String, Object> retrievedAttributes = oAuth2User.getAttributes();
+		OAuth2UserInfo userInfo = OAuth2UserInfoFactory.getOAuth2UserInfo(registrationId, retrievedAttributes);
 
 		Optional<User> optionalUser = userRepository.findByProviderAndProviderId(registrationId, userInfo.getId());
-		optionalUser
+		User user = optionalUser
 			.map(found -> update(found, userInfo))
 			.orElseGet(() -> register(userInfo, userRequest));
 
-		return new DefaultOAuth2User(Collections.singleton(new SimpleGrantedAuthority("ROLE_USER")),
-			attributes, "id");
+		return new DefaultOAuth2User(Collections.singleton(new SimpleGrantedAuthority(user.getRole().getValue())),
+			retrievedAttributes, userNameAttributeName);
 	}
 
 	private User register(OAuth2UserInfo userInfo, OAuth2UserRequest userRequest) {
