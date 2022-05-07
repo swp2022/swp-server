@@ -19,8 +19,6 @@ import lombok.NoArgsConstructor;
 public class UserDto {
 
 	@ReadOnlyProperty
-	private Integer id;
-	@ReadOnlyProperty
 	private Role role;
 	@Email
 	@Column(nullable = false, unique = true)
