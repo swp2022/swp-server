@@ -2,7 +2,6 @@ package com.swp.oauth;
 
 import java.util.Collections;
 import java.util.Map;
-import java.util.Optional;
 
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
@@ -14,8 +13,8 @@ import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.swp.oauth.dto.OAuth2UserInfo;
-import com.swp.oauth.dto.OAuth2UserInfoFactory;
+import com.swp.oauth.dto.OAuth2UserAttribute;
+import com.swp.oauth.dto.OAuth2UserAttributeFactory;
 import com.swp.user.domain.Role;
 import com.swp.user.domain.User;
 import com.swp.user.domain.UserRepository;
@@ -26,6 +25,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class ThirdPartyOAuth2UserService implements OAuth2UserService<OAuth2UserRequest, OAuth2User> {
 
+	private static final String PRODIVER_KEY = "provider";
 	private final UserRepository userRepository;
 
 	@Transactional
@@ -42,30 +42,30 @@ public class ThirdPartyOAuth2UserService implements OAuth2UserService<OAuth2User
 			.getProviderDetails()
 			.getUserInfoEndpoint()
 			.getUserNameAttributeName();
-		Map<String, Object> retrievedAttributes = oAuth2User.getAttributes();
-		OAuth2UserInfo userInfo = OAuth2UserInfoFactory.getOAuth2UserInfo(registrationId, retrievedAttributes);
 
-		Optional<User> optionalUser = userRepository.findByProviderAndProviderId(registrationId, userInfo.getId());
-		User user = optionalUser
-			.map(found -> update(found, userInfo))
-			.orElseGet(() -> register(userInfo, userRequest));
+		OAuth2UserAttribute userAttribute = OAuth2UserAttributeFactory.getOAuth2UserAttribute(registrationId,
+			oAuth2User.getAttributes());
+
+		User user = userRepository.findByProviderAndProviderId(registrationId, userAttribute.getProviderId())
+			.map(found -> update(found, userAttribute))
+			.orElseGet(() -> register(userAttribute, userRequest));
 
 		return new DefaultOAuth2User(Collections.singleton(new SimpleGrantedAuthority(user.getRole().getValue())),
-			retrievedAttributes, userNameAttributeName);
+			userAttribute.getAttributes(), userNameAttributeName);
 	}
 
-	private User register(OAuth2UserInfo userInfo, OAuth2UserRequest userRequest) {
+	private User register(OAuth2UserAttribute userAttribute, OAuth2UserRequest userRequest) {
 		return userRepository.save(User.builder()
 			.role(Role.USER)
-			.email(userInfo.getEmail())
-			.nickname(userInfo.getNickname())
-			.profileImage(userInfo.getProfileImage())
+			.email(userAttribute.getEmail())
+			.nickname(userAttribute.getNickname())
+			.profileImage(userAttribute.getProfileImage())
 			.provider(userRequest.getClientRegistration().getRegistrationId())
-			.providerId(userInfo.getId())
+			.providerId(userAttribute.getProviderId())
 			.build());
 	}
 
-	private User update(User user, OAuth2UserInfo userInfo) {
-		return user.updateProfile(userInfo.getNickname(), user.getProfileImage());
+	private User update(User user, OAuth2UserAttribute userAttribute) {
+		return user.updateProfile(userAttribute.getNickname(), user.getProfileImage());
 	}
 }

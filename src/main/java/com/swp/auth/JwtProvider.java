@@ -3,19 +3,15 @@ package com.swp.auth;
 import java.nio.charset.StandardCharsets;
 import java.security.Key;
 import java.util.Base64;
-import java.util.Collection;
 import java.util.Date;
-import java.util.List;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
+import com.swp.auth.dto.JwtUserDetails;
 import com.swp.auth.dto.TokenDto;
 
 import io.jsonwebtoken.Claims;
@@ -32,6 +28,7 @@ import io.jsonwebtoken.security.SignatureException;
 public class JwtProvider {
 
 	private static final String ROLE_KEY = "role";
+	private static final String PROVIDER_KEY = "provider";
 	private final Key secret;
 	@Value("${app.auth.tokenExpiry}")
 	private Long accessTokenExpiry;
@@ -43,9 +40,10 @@ public class JwtProvider {
 		this.secret = Keys.hmacShaKeyFor(secretBytes);
 	}
 
-	public TokenDto createToken(String userId, String role) {
+	public TokenDto createToken(String provider, String providerId, String role) {
 		Claims claims = Jwts.claims();
-		claims.setSubject(userId);
+		claims.setSubject(providerId);
+		claims.put(PROVIDER_KEY, provider);
 		claims.put(ROLE_KEY, role);
 		Date now = new Date();
 
@@ -70,13 +68,16 @@ public class JwtProvider {
 
 	public Authentication getAuthentication(String accessToken) {
 		Claims claims = parseJws(accessToken).getBody();
-		String userId = claims.getSubject();
+		String providerId = claims.getSubject();
+		String provider = claims.get(PROVIDER_KEY).toString();
 		String role = claims.get(ROLE_KEY).toString();
 
-		Collection<? extends GrantedAuthority> roles = List.of(new SimpleGrantedAuthority(role));
-
-		UserDetails userDetails = new User(userId, "", roles);
-		return new UsernamePasswordAuthenticationToken(userDetails, "", roles);
+		UserDetails userDetails = JwtUserDetails.builder()
+			.provider(provider)
+			.providerId(providerId)
+			.role(role)
+			.build();
+		return new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
 	}
 
 	public boolean validate(String token) {
