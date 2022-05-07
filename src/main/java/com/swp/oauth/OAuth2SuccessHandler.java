@@ -23,23 +23,26 @@ import lombok.RequiredArgsConstructor;
 @Component
 public class OAuth2SuccessHandler implements AuthenticationSuccessHandler {
 
+	private static final String PROVIDER_KEY = "provider";
 	@Value("${frontend.redirect-uri}")
 	private String REDIRECTION_URI;
 	private final JwtProvider jwtProvider;
 
-	// TODO: JWT Token 발행 및 전송
 	@Override
 	public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
 		Authentication authentication) throws IOException, ServletException {
 		OAuth2User oAuth2User = (OAuth2User)authentication.getPrincipal();
-		TokenDto token = jwtProvider.createToken(oAuth2User.getName(), Role.USER.getValue());
+		String provider = oAuth2User.getAttribute(PROVIDER_KEY);
+
+		String providerId = oAuth2User.getName();
+		String role = Role.USER.getValue();
+		TokenDto token = jwtProvider.createToken(provider, providerId, role);
 
 		String targetUrl = UriComponentsBuilder.fromUriString(REDIRECTION_URI)
 			.queryParam("accessToken", token.getAccessToken())
 			.queryParam("refreshToken", token.getRefreshToken())
 			.build()
 			.toUriString();
-		System.out.println("targetUrl = " + targetUrl);
 		response.sendRedirect(targetUrl);
 	}
 }
