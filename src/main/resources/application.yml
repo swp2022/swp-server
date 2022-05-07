@@ -17,9 +17,8 @@ spring:
   config:
     import: classpath:application-oauth.yml
 
-jwt.Secret: ${JWT_SECRET}
 
 app.auth:
-  tokenSecret: ${TOKEN_SECRET}
-  tokenExpiry: 180000
+  jwtSecret: ${TOKEN_SECRET}
+  tokenExpiry: 86400000
   refreshTokenExpiry: 604800000
