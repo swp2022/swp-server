@@ -21,6 +21,7 @@ public class KakaoOAuth2UserAttribute extends OAuth2UserAttribute {
 		return id.toString();
 	}
 
+	// TODO: @0chil: email null 처리 방안 모색
 	@Override
 	public String getEmail() {
 		return kakaoAccount.get("email").toString();

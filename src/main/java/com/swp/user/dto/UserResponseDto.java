@@ -1,10 +1,5 @@
 package com.swp.user.dto;
 
-import javax.persistence.Column;
-import javax.validation.constraints.Email;
-
-import org.springframework.data.annotation.ReadOnlyProperty;
-
 import com.swp.user.domain.Role;
 
 import lombok.AllArgsConstructor;
@@ -16,14 +11,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class UserDto {
-
-	@ReadOnlyProperty
+public class UserResponseDto {
 	private Role role;
-	@Email
-	@Column(nullable = false, unique = true)
 	private String email;
-	@Column(nullable = false, unique = true)
 	private String nickname;
 	private String profileImage;
 }

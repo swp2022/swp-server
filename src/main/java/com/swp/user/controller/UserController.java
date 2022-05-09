@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.swp.auth.dto.JwtUserDetails;
 import com.swp.user.domain.UserService;
-import com.swp.user.dto.UserDto;
+import com.swp.user.dto.UserResponseDto;
 
 import lombok.RequiredArgsConstructor;
 
@@ -17,7 +17,7 @@ public class UserController {
 	private final UserService userService;
 
 	@GetMapping(value = "/v1/user")
-	public UserDto getUser() {
+	public UserResponseDto getUser() {
 		JwtUserDetails userDetails = (JwtUserDetails)SecurityContextHolder.getContext()
 			.getAuthentication()
 			.getPrincipal();
