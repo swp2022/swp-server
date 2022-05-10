@@ -13,6 +13,9 @@ import org.springframework.stereotype.Component;
 
 import com.swp.auth.dto.JwtUserDetails;
 import com.swp.auth.dto.TokenDto;
+import com.swp.auth.exception.EmptyTokenException;
+import com.swp.auth.exception.ExpiredTokenException;
+import com.swp.auth.exception.InvalidTokenException;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
@@ -83,17 +86,18 @@ public class JwtProvider {
 	public boolean validate(String token) {
 		try {
 			parseJws(token);
-			return true;
-		} catch (ExpiredJwtException | SignatureException e) {
-			System.err.println("Expired JWS");
+		} catch (ExpiredJwtException e) {
+			throw new ExpiredTokenException("만료된 토큰입니다");
 		} catch (UnsupportedJwtException e) {
-			System.err.println("Unsupported JWS");
+			throw new InvalidTokenException("비정상적인 토큰입니다");
 		} catch (MalformedJwtException e) {
-			System.err.println("Malformed JWS");
+			throw new InvalidTokenException("잘못 만들어진 토큰입니다");
 		} catch (IllegalArgumentException e) {
-			System.err.println("Null JWS");
+			throw new EmptyTokenException("토큰이 비어있습니다");
+		} catch (SignatureException e) {
+			throw new InvalidTokenException("잘못된 토큰 서명입니다");
 		}
-		return false;
+		return true;
 	}
 
 	private Jws<Claims> parseJws(String accessToken) {

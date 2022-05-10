@@ -9,6 +9,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import com.swp.auth.JwtAccessDeniedHandler;
 import com.swp.auth.JwtAuthenticationEntryPoint;
 import com.swp.auth.JwtAuthenticationFilter;
+import com.swp.auth.JwtExceptionFilter;
 import com.swp.auth.JwtProvider;
 import com.swp.oauth.OAuth2SuccessHandler;
 import com.swp.oauth.ThirdPartyOAuth2UserService;
@@ -25,13 +26,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	private final JwtProvider jwtProvider;
 	private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
 	private final JwtAccessDeniedHandler jwtAccessDeniedHandler;
+	private final JwtExceptionFilter jwtExceptionFilter;
 
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
-		http
-			.cors()
+		http.cors()
 			.and()
-			.csrf().disable()
+			.csrf()
+			.disable()
 
 			.sessionManagement()
 			.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
@@ -43,16 +45,21 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
 			.and()
 			.authorizeRequests()
-			.antMatchers("/v1/**").hasRole(Role.USER.toString())
-			.antMatchers( "/login/**").permitAll()
-			.anyRequest().authenticated()
+			.antMatchers("/v1/**")
+			.hasRole(Role.USER.toString())
+			.antMatchers("/login/**")
+			.permitAll()
+			.anyRequest()
+			.authenticated()
 			.and()
 
 			.oauth2Login()
-			.userInfoEndpoint().userService(thirdPartyOAuth2UserService)
+			.userInfoEndpoint()
+			.userService(thirdPartyOAuth2UserService)
 			.and()
 			.successHandler(successHandler);
 
 		http.addFilterBefore(new JwtAuthenticationFilter(jwtProvider), UsernamePasswordAuthenticationFilter.class);
+		http.addFilterBefore(jwtExceptionFilter, JwtAuthenticationFilter.class);
 	}
 }
