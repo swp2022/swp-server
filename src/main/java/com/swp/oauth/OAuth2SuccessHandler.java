@@ -14,7 +14,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import com.swp.auth.JwtProvider;
-import com.swp.auth.dto.TokenDto;
+import com.swp.auth.dto.TokenResponseDto;
 import com.swp.user.domain.Role;
 
 import lombok.RequiredArgsConstructor;
@@ -36,7 +36,7 @@ public class OAuth2SuccessHandler implements AuthenticationSuccessHandler {
 
 		String providerId = oAuth2User.getName();
 		String role = Role.USER.getValue();
-		TokenDto token = jwtProvider.createToken(provider, providerId, role);
+		TokenResponseDto token = jwtProvider.createToken(provider, providerId, role);
 
 		String targetUrl = UriComponentsBuilder.fromUriString(REDIRECTION_URI)
 			.queryParam("accessToken", token.getAccessToken())

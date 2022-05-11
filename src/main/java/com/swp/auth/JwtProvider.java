@@ -12,7 +12,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 import com.swp.auth.dto.JwtUserDetails;
-import com.swp.auth.dto.TokenDto;
+import com.swp.auth.dto.TokenResponseDto;
+import com.swp.auth.exception.TokenException;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
@@ -40,7 +41,7 @@ public class JwtProvider {
 		this.secret = Keys.hmacShaKeyFor(secretBytes);
 	}
 
-	public TokenDto createToken(String provider, String providerId, String role) {
+	public TokenResponseDto createToken(String provider, String providerId, String role) {
 		Claims claims = Jwts.claims();
 		claims.setSubject(providerId);
 		claims.put(PROVIDER_KEY, provider);
@@ -60,7 +61,7 @@ public class JwtProvider {
 			.signWith(secret, SignatureAlgorithm.HS512)
 			.compact();
 
-		return TokenDto.builder()
+		return TokenResponseDto.builder()
 			.accessToken(accessToken)
 			.refreshToken(refreshToken)
 			.build();
@@ -80,20 +81,16 @@ public class JwtProvider {
 		return new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
 	}
 
-	public boolean validate(String token) {
+	public void validate(String token) {
 		try {
 			parseJws(token);
-			return true;
-		} catch (ExpiredJwtException | SignatureException e) {
-			System.err.println("Expired JWS");
-		} catch (UnsupportedJwtException e) {
-			System.err.println("Unsupported JWS");
-		} catch (MalformedJwtException e) {
-			System.err.println("Malformed JWS");
+		} catch (ExpiredJwtException e) {
+			throw new TokenException("만료된 토큰입니다");
+		} catch (UnsupportedJwtException | MalformedJwtException | SignatureException e) {
+			throw new TokenException("비정상적인 토큰입니다");
 		} catch (IllegalArgumentException e) {
-			System.err.println("Null JWS");
+			throw new TokenException("토큰이 비어있습니다");
 		}
-		return false;
 	}
 
 	private Jws<Claims> parseJws(String accessToken) {

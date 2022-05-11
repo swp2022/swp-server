@@ -24,8 +24,6 @@ import lombok.RequiredArgsConstructor;
 @Service
 @RequiredArgsConstructor
 public class ThirdPartyOAuth2UserService implements OAuth2UserService<OAuth2UserRequest, OAuth2User> {
-
-	private static final String PRODIVER_KEY = "provider";
 	private final UserRepository userRepository;
 
 	@Transactional
