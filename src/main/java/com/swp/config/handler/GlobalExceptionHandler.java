@@ -8,7 +8,6 @@ import java.util.Objects;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -29,8 +28,6 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 		if (exception instanceof ApiException) {
 			return handleExceptionInternal(exception, null, new HttpHeaders(), ((ApiException)exception).getStatus(),
 				request);
-		} else if (exception instanceof AuthenticationException) {
-			return handleExceptionInternal(exception, null, new HttpHeaders(), HttpStatus.UNAUTHORIZED, request);
 		} else
 			return handleExceptionInternal(exception, null, new HttpHeaders(), INTERNAL_SERVER_ERROR, request);
 	}
