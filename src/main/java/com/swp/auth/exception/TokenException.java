@@ -2,9 +2,9 @@ package com.swp.auth.exception;
 
 import org.springframework.security.core.AuthenticationException;
 
-public class InvalidTokenException extends AuthenticationException {
+public class TokenException extends AuthenticationException {
 
-	public InvalidTokenException(String message) {
+	public TokenException(String message) {
 		super(message);
 	}
 }

@@ -13,8 +13,7 @@ import org.springframework.stereotype.Component;
 
 import com.swp.auth.dto.JwtUserDetails;
 import com.swp.auth.dto.TokenResponseDto;
-import com.swp.auth.exception.EmptyTokenException;
-import com.swp.auth.exception.InvalidTokenException;
+import com.swp.auth.exception.TokenException;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
@@ -86,11 +85,11 @@ public class JwtProvider {
 		try {
 			parseJws(token);
 		} catch (ExpiredJwtException e) {
-			throw new InvalidTokenException("만료된 토큰입니다");
+			throw new TokenException("만료된 토큰입니다");
 		} catch (UnsupportedJwtException | MalformedJwtException | SignatureException e) {
-			throw new InvalidTokenException("비정상적인 토큰입니다");
+			throw new TokenException("비정상적인 토큰입니다");
 		} catch (IllegalArgumentException e) {
-			throw new EmptyTokenException("토큰이 비어있습니다");
+			throw new TokenException("토큰이 비어있습니다");
 		}
 	}
 
