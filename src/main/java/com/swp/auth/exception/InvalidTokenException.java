@@ -1,8 +1,8 @@
 package com.swp.auth.exception;
 
-import com.swp.common.exception.ForbiddenException;
+import org.springframework.security.core.AuthenticationException;
 
-public class InvalidTokenException extends ForbiddenException {
+public class InvalidTokenException extends AuthenticationException {
 
 	public InvalidTokenException(String message) {
 		super(message);

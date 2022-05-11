@@ -1,10 +1,10 @@
 package com.swp.auth.exception;
 
-import com.swp.common.exception.ForbiddenException;
+import org.springframework.security.core.AuthenticationException;
 
-public class EmptyTokenException extends ForbiddenException {
+public class EmptyTokenException extends AuthenticationException {
 
-	public EmptyTokenException(String message) {
-		super(message);
+	public EmptyTokenException(String msg) {
+		super(msg);
 	}
 }
