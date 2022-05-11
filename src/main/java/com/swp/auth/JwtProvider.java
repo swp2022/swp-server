@@ -12,7 +12,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 import com.swp.auth.dto.JwtUserDetails;
-import com.swp.auth.dto.TokenDto;
+import com.swp.auth.dto.TokenResponseDto;
 import com.swp.auth.exception.EmptyTokenException;
 import com.swp.auth.exception.InvalidTokenException;
 
@@ -42,7 +42,7 @@ public class JwtProvider {
 		this.secret = Keys.hmacShaKeyFor(secretBytes);
 	}
 
-	public TokenDto createToken(String provider, String providerId, String role) {
+	public TokenResponseDto createToken(String provider, String providerId, String role) {
 		Claims claims = Jwts.claims();
 		claims.setSubject(providerId);
 		claims.put(PROVIDER_KEY, provider);
@@ -62,7 +62,7 @@ public class JwtProvider {
 			.signWith(secret, SignatureAlgorithm.HS512)
 			.compact();
 
-		return TokenDto.builder()
+		return TokenResponseDto.builder()
 			.accessToken(accessToken)
 			.refreshToken(refreshToken)
 			.build();
@@ -82,21 +82,16 @@ public class JwtProvider {
 		return new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
 	}
 
-	public boolean validate(String token) {
+	public void validate(String token) {
 		try {
 			parseJws(token);
 		} catch (ExpiredJwtException e) {
 			throw new InvalidTokenException("만료된 토큰입니다");
-		} catch (UnsupportedJwtException e) {
+		} catch (UnsupportedJwtException | MalformedJwtException | SignatureException e) {
 			throw new InvalidTokenException("비정상적인 토큰입니다");
-		} catch (MalformedJwtException e) {
-			throw new InvalidTokenException("잘못 만들어진 토큰입니다");
 		} catch (IllegalArgumentException e) {
 			throw new EmptyTokenException("토큰이 비어있습니다");
-		} catch (SignatureException e) {
-			throw new InvalidTokenException("잘못된 토큰 서명입니다");
 		}
-		return true;
 	}
 
 	private Jws<Claims> parseJws(String accessToken) {
