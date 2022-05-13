@@ -20,5 +20,7 @@ spring:
 
 app.auth:
   jwtSecret: ${TOKEN_SECRET}
+  jwtRefreshSecret: ${REFRESH_SECRET}
   tokenExpiry: 86400000
   refreshTokenExpiry: 604800000
+  refreshTokenNearExpiryCriterion: 259200000

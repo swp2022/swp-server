@@ -12,7 +12,9 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 import com.swp.auth.dto.JwtUserDetails;
+import com.swp.auth.dto.TokenRequestDto;
 import com.swp.auth.dto.TokenResponseDto;
+import com.swp.auth.exception.InvalidTokenException;
 import com.swp.auth.exception.TokenException;
 
 import io.jsonwebtoken.Claims;
@@ -30,15 +32,21 @@ public class JwtProvider {
 
 	private static final String ROLE_KEY = "role";
 	private static final String PROVIDER_KEY = "provider";
-	private final Key secret;
+	private final Key accessTokenSecret;
+	private final Key refreshTokenSecret;
 	@Value("${app.auth.tokenExpiry}")
 	private Long accessTokenExpiry;
 	@Value("${app.auth.refreshTokenExpiry}")
 	private Long refreshTokenExpiry;
+	@Value("${app.auth.refreshTokenNearExpiryCriterion}")
+	private Long refreshTokenExpiryCriterion;
 
-	public JwtProvider(@Value("${app.auth.jwtSecret}") String secret) {
-		byte[] secretBytes = Base64.getEncoder().encode(secret.getBytes(StandardCharsets.UTF_8));
-		this.secret = Keys.hmacShaKeyFor(secretBytes);
+	public JwtProvider(@Value("${app.auth.jwtSecret}") String accessTokenSecret,
+		@Value("${app.auth.jwtRefreshSecret}") String refreshTokenSecret) {
+		byte[] secretBytes = Base64.getEncoder().encode(accessTokenSecret.getBytes(StandardCharsets.UTF_8));
+		this.accessTokenSecret = Keys.hmacShaKeyFor(secretBytes);
+		secretBytes = Base64.getEncoder().encode(refreshTokenSecret.getBytes(StandardCharsets.UTF_8));
+		this.refreshTokenSecret = Keys.hmacShaKeyFor(secretBytes);
 	}
 
 	public TokenResponseDto createToken(String provider, String providerId, String role) {
@@ -52,38 +60,32 @@ public class JwtProvider {
 			.setClaims(claims)
 			.setIssuedAt(now)
 			.setExpiration(new Date(now.getTime() + accessTokenExpiry))
-			.signWith(secret, SignatureAlgorithm.HS512)
+			.signWith(accessTokenSecret, SignatureAlgorithm.HS512)
 			.compact();
 
 		String refreshToken = Jwts.builder()
+			.setClaims(claims)
 			.setIssuedAt(now)
 			.setExpiration(new Date(now.getTime() + refreshTokenExpiry))
-			.signWith(secret, SignatureAlgorithm.HS512)
+			.signWith(refreshTokenSecret, SignatureAlgorithm.HS512)
 			.compact();
 
-		return TokenResponseDto.builder()
-			.accessToken(accessToken)
-			.refreshToken(refreshToken)
-			.build();
+		return TokenResponseDto.builder().accessToken(accessToken).refreshToken(refreshToken).build();
 	}
 
 	public Authentication getAuthentication(String accessToken) {
-		Claims claims = parseJws(accessToken).getBody();
+		Claims claims = parseJws(accessToken, accessTokenSecret).getBody();
 		String providerId = claims.getSubject();
 		String provider = claims.get(PROVIDER_KEY).toString();
 		String role = claims.get(ROLE_KEY).toString();
 
-		UserDetails userDetails = JwtUserDetails.builder()
-			.provider(provider)
-			.providerId(providerId)
-			.role(role)
-			.build();
+		UserDetails userDetails = JwtUserDetails.builder().provider(provider).providerId(providerId).role(role).build();
 		return new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
 	}
 
 	public void validate(String token) {
 		try {
-			parseJws(token);
+			parseJws(token, accessTokenSecret);
 		} catch (ExpiredJwtException e) {
 			throw new TokenException("만료된 토큰입니다");
 		} catch (UnsupportedJwtException | MalformedJwtException | SignatureException e) {
@@ -93,10 +95,59 @@ public class JwtProvider {
 		}
 	}
 
-	private Jws<Claims> parseJws(String accessToken) {
-		return Jwts.parserBuilder()
-			.setSigningKey(secret)
-			.build().parseClaimsJws(accessToken);
+	private boolean isTokenValid(String token, Key key) {
+		try {
+			parseJws(token, key);
+		} catch (ExpiredJwtException e) {
+			return false;
+		} catch (UnsupportedJwtException | MalformedJwtException | SignatureException e) {
+			throw new InvalidTokenException("비정상적인 토큰입니다");
+		} catch (IllegalArgumentException e) {
+			throw new InvalidTokenException("토큰이 비어있습니다");
+		}
+		return true;
+	}
+
+	public TokenResponseDto renewToken(TokenRequestDto requestDto) {
+		String accessToken = requestDto.getAccessToken();
+		String refreshToken = requestDto.getRefreshToken();
+		if (isTokenValid(accessToken, accessTokenSecret))
+			return TokenResponseDto.builder()
+				.accessToken(accessToken)
+				.refreshToken(refreshToken)
+				.build();
+
+		if (!isTokenValid(requestDto.getRefreshToken(), refreshTokenSecret))
+			throw new InvalidTokenException("리프레쉬 토큰이 만료되었습니다");
+
+		Claims AccessTokenClaims = parseJws(requestDto.getRefreshToken(), refreshTokenSecret).getBody();
+		Claims RefreshTokenClaims = parseJws(requestDto.getRefreshToken(), refreshTokenSecret).getBody();
+		Date now = new Date();
+
+		accessToken = Jwts.builder()
+			.setClaims(AccessTokenClaims)
+			.setIssuedAt(now)
+			.setExpiration(new Date(now.getTime() + accessTokenExpiry))
+			.signWith(accessTokenSecret, SignatureAlgorithm.HS512)
+			.compact();
+
+		if (RefreshTokenClaims.getExpiration().getTime() - now.getTime() < refreshTokenExpiryCriterion) {
+			refreshToken = Jwts.builder()
+				.setClaims(RefreshTokenClaims)
+				.setIssuedAt(now)
+				.setExpiration(new Date(now.getTime() + refreshTokenExpiry))
+				.signWith(refreshTokenSecret, SignatureAlgorithm.HS512)
+				.compact();
+		}
+
+		return TokenResponseDto.builder()
+			.accessToken(accessToken)
+			.refreshToken(refreshToken)
+			.build();
+	}
+
+	private Jws<Claims> parseJws(String token, Key key) {
+		return Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
 	}
 
 }
