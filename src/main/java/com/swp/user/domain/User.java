@@ -47,10 +47,10 @@ public class User extends CreatedAtEntity {
 	@Column(name = "deleted_at", nullable = true)
 	private LocalDateTime deletedAt;
 
-	@OneToMany(mappedBy = "fromUser",cascade = CascadeType.REMOVE)
+	@OneToMany(mappedBy = "fromUser")
 	private List<Relationship> followingList= new ArrayList<>();
 
-	@OneToMany(mappedBy="toUser",cascade = CascadeType.REMOVE)
+	@OneToMany(mappedBy="toUser")
 	private List<Relationship> followerList= new ArrayList<>();
 
 	@OneToMany(mappedBy = "user")

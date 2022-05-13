@@ -1,7 +1,10 @@
 package com.swp.user.domain;
 import lombok.Builder;
+import lombok.NoArgsConstructor;
+
 import javax.persistence.*;
 
+@NoArgsConstructor
 @Entity
 @Table(name = "relationships")
 public class Relationship {
