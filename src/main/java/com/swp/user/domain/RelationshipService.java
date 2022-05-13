@@ -21,7 +21,7 @@ public class RelationshipService {
         User fromUser=userRepository.findByProviderAndProviderId(userDetails.getProvider(), userDetails.getUsername())
             .orElseThrow(() -> new UserNotFoundException("없는 유저입니다"));
         User toUser= userRepository.findById(relationshipRequestDto.getToUserId())
-            .orElseThrow( ()->new UserNotFoundException("팔로우할 유저를 찾을 수 없습니다."));
+            .orElseThrow(() -> new UserNotFoundException("팔로우할 유저를 찾을 수 없습니다."));
         relationshipRepository.save(Relationship.builder()
             .fromUser(fromUser)
             .toUser(toUser)
@@ -35,11 +35,11 @@ public class RelationshipService {
         User fromUser=userRepository.findByProviderAndProviderId(userDetails.getProvider(), userDetails.getUsername())
                 .orElseThrow(() -> new UserNotFoundException("없는 유저입니다"));
         User toUser= userRepository.findById(relationshipRequestDto.getToUserId())
-                .orElseThrow( ()->new UserNotFoundException("팔로우 취소할 유저를 찾을 수 없습니다."));
+                .orElseThrow(() -> new UserNotFoundException("팔로우 취소할 유저를 찾을 수 없습니다."));
 
         relationshipRepository.delete(
                 relationshipRepository.findByFromUserAndToUser(fromUser, toUser)
-                        .orElseThrow(()->new RelationshipNotFoundException(toUser.getNickname()+"유저를 팔로우하고 있지 않습니다."))
+                        .orElseThrow(() -> new RelationshipNotFoundException(toUser.getNickname() + "유저를 팔로우하고 있지 않습니다."))
         );
     }
 }

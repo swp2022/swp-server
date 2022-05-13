@@ -21,7 +21,7 @@ public class RelationshipController {
         relationshipService.createRelationship(relationshipRequestDto);
     }
 
-    @DeleteMapping(value="/v1/relationship")
+    @DeleteMapping(value = "/v1/relationship")
     public void unfollowUser(@RequestBody RelationshipRequestDto relationshipRequestDto){
         relationshipService.deleteRelationship(relationshipRequestDto);
     }

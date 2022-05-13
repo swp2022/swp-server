@@ -23,7 +23,7 @@ public class Relationship {
     private User toUser;
 
     @Builder
-    public Relationship(User fromUser,User toUser){
+    public Relationship(User fromUser, User toUser){
         this.fromUser=fromUser;
         this.toUser=toUser;
     }
