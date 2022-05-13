@@ -44,5 +44,4 @@ public class RelationshipService {
                         .orElseThrow(()->new RelationshipNotFoundException(toUser.getNickname()+"유저를 팔로우하고 있지 않습니다."))
         );
     }
-
 }

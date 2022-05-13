@@ -1,6 +1,5 @@
 package com.swp.user.domain;
 import lombok.Builder;
-
 import javax.persistence.*;
 
 @Entity
