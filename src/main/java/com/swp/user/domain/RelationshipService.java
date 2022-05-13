@@ -5,8 +5,6 @@ import com.swp.user.dto.RelationshipRequestDto;
 import com.swp.user.exception.RelationshipNotFoundException;
 import com.swp.user.exception.UserNotFoundException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.repository.query.Param;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
