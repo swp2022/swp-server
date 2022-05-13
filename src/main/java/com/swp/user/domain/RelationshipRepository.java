@@ -6,8 +6,4 @@ import java.util.Optional;
 
 public interface RelationshipRepository extends JpaRepository<Relationship, Integer> {
     Optional<Relationship> findByFromUserAndToUser(User fromUser,User toUser);
-
-    Long countByToUser(User user);
-
-    Long countByFromUser(User user);
 }
