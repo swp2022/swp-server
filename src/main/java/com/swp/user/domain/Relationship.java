@@ -1,4 +1,6 @@
 package com.swp.user.domain;
+import lombok.Builder;
+
 import javax.persistence.*;
 
 @Entity
@@ -17,4 +19,10 @@ public class Relationship {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="to_user_id",nullable = false)
     private User toUser;
+
+    @Builder
+    public Relationship(User fromUser,User toUser){
+        this.fromUser=fromUser;
+        this.toUser=toUser;
+    }
 }
