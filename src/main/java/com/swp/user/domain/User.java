@@ -48,10 +48,10 @@ public class User extends CreatedAtEntity {
 	private LocalDateTime deletedAt;
 
 	@OneToMany(mappedBy = "fromUser")
-	private List<Relationship> followingList= new ArrayList<>();
+	private List<Relationship> followingList = new ArrayList<>();
 
 	@OneToMany(mappedBy="toUser")
-	private List<Relationship> followerList= new ArrayList<>();
+	private List<Relationship> followerList = new ArrayList<>();
 
 	@OneToMany(mappedBy = "user")
 	private List<Board> boardList = new ArrayList<>();
