@@ -34,15 +34,15 @@ public class JwtProvider {
 	private static final String PROVIDER_KEY = "provider";
 	private final Key accessTokenSecret;
 	private final Key refreshTokenSecret;
-	@Value("${app.auth.tokenExpiry}")
+	@Value("${app.auth.accessTokenExpiry}")
 	private Long accessTokenExpiry;
 	@Value("${app.auth.refreshTokenExpiry}")
 	private Long refreshTokenExpiry;
 	@Value("${app.auth.refreshTokenNearExpiryCriterion}")
 	private Long refreshTokenExpiryCriterion;
 
-	public JwtProvider(@Value("${app.auth.jwtSecret}") String accessTokenSecret,
-		@Value("${app.auth.jwtRefreshSecret}") String refreshTokenSecret) {
+	public JwtProvider(@Value("${app.auth.accessTokenSecret}") String accessTokenSecret,
+		@Value("${app.auth.refreshTokenSecret}") String refreshTokenSecret) {
 		byte[] secretBytes = Base64.getEncoder().encode(accessTokenSecret.getBytes(StandardCharsets.UTF_8));
 		this.accessTokenSecret = Keys.hmacShaKeyFor(secretBytes);
 		secretBytes = Base64.getEncoder().encode(refreshTokenSecret.getBytes(StandardCharsets.UTF_8));
@@ -109,14 +109,8 @@ public class JwtProvider {
 	}
 
 	public TokenResponseDto renewToken(TokenRequestDto requestDto) {
-		String accessToken = requestDto.getAccessToken();
 		String refreshToken = requestDto.getRefreshToken();
-		if (isTokenValid(accessToken, accessTokenSecret))
-			return TokenResponseDto.builder()
-				.accessToken(accessToken)
-				.refreshToken(refreshToken)
-				.build();
-
+		String accessToken;
 		if (!isTokenValid(requestDto.getRefreshToken(), refreshTokenSecret))
 			throw new InvalidTokenException("리프레쉬 토큰이 만료되었습니다");
 
