@@ -33,12 +33,14 @@ public class OAuth2SuccessHandler implements AuthenticationSuccessHandler {
 	@Value("${frontend.authorizedRedirectUris}")
 	private String[] AUTHORIZED_URIS;
 	private final JwtProvider jwtProvider;
+	private final CookieOAuth2AuthorizationRequestRepository requestRepository;
 
 	@Override
 	public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
 		Authentication authentication) throws IOException, ServletException {
 		OAuth2User oAuth2User = (OAuth2User)authentication.getPrincipal();
 
+		requestRepository.removeAuthorizationRequestCookies(request, response);
 		response.sendRedirect(getTargetUrl(request, oAuth2User));
 	}
 

@@ -11,6 +11,7 @@ import com.swp.auth.JwtAuthenticationEntryPoint;
 import com.swp.auth.JwtAuthenticationFilter;
 import com.swp.auth.JwtProvider;
 import com.swp.oauth.CookieOAuth2AuthorizationRequestRepository;
+import com.swp.oauth.OAuth2FailureHandler;
 import com.swp.oauth.OAuth2SuccessHandler;
 import com.swp.oauth.ThirdPartyOAuth2UserService;
 import com.swp.user.domain.Role;
@@ -23,6 +24,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
 	private final ThirdPartyOAuth2UserService thirdPartyOAuth2UserService;
 	private final OAuth2SuccessHandler successHandler;
+	private final OAuth2FailureHandler failureHandler;
 	private final JwtProvider jwtProvider;
 	private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
 	private final CookieOAuth2AuthorizationRequestRepository oAuth2AuthorizationRequestRepository;
@@ -60,7 +62,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 			.userInfoEndpoint()
 			.userService(thirdPartyOAuth2UserService)
 			.and()
-			.successHandler(successHandler);
+			.successHandler(successHandler)
+			.failureHandler(failureHandler);
 
 		http.addFilterBefore(new JwtAuthenticationFilter(jwtProvider, jwtAuthenticationEntryPoint),
 			UsernamePasswordAuthenticationFilter.class);
