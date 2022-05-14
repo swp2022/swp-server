@@ -28,9 +28,9 @@ import lombok.RequiredArgsConstructor;
 public class OAuth2SuccessHandler implements AuthenticationSuccessHandler {
 
 	private static final String PROVIDER_KEY = "provider";
-	@Value("${frontend.redirect-uri}")
+	@Value("${frontend.redirectUri}")
 	private String REDIRECTION_URI;
-	@Value("${frontend.authorized-redirect-uris}")
+	@Value("${frontend.authorizedRedirectUris}")
 	private String[] AUTHORIZED_URIS;
 	private final JwtProvider jwtProvider;
 
