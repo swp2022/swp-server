@@ -4,17 +4,10 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 import com.swp.board.domain.Board;
+import com.swp.user.domain.Relationship;
 import com.swp.common.domain.CreatedAtEntity;
 
 import lombok.Builder;
@@ -53,6 +46,12 @@ public class User extends CreatedAtEntity {
 
 	@Column(name = "deleted_at", nullable = true)
 	private LocalDateTime deletedAt;
+
+	@OneToMany(mappedBy = "fromUser", cascade = CascadeType.REMOVE, orphanRemoval = true)
+	private List<Relationship> followingList = new ArrayList<>();
+
+	@OneToMany(mappedBy="toUser", cascade = CascadeType.REMOVE, orphanRemoval = true)
+	private List<Relationship> followerList = new ArrayList<>();
 
 	@OneToMany(mappedBy = "user")
 	private List<Board> boardList = new ArrayList<>();

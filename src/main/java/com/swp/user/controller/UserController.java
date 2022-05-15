@@ -3,7 +3,6 @@ package com.swp.user.controller;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
-
 import com.swp.auth.dto.JwtUserDetails;
 import com.swp.user.domain.UserService;
 import com.swp.user.dto.UserResponseDto;
