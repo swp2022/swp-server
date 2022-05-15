@@ -20,6 +20,7 @@ public class RelationshipController {
     }
 
     @DeleteMapping(value = "/v1/relationship")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     public void unfollowUser(@RequestBody RelationshipRequestDto relationshipRequestDto){
         relationshipService.deleteRelationship(relationshipRequestDto);
     }
