@@ -17,7 +17,7 @@ public class AuthController {
 
 	private final JwtProvider jwtProvider;
 
-	@PostMapping(path = "/login/renew")
+	@PostMapping(path = "/v1/auth/renew")
 	public TokenResponseDto renewToken(@RequestBody TokenRequestDto requestDto) {
 		return jwtProvider.renewToken(requestDto);
 	}

@@ -28,7 +28,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
 	@Override
 	public void configure(WebSecurity web) throws Exception {
-		web.ignoring().mvcMatchers(HttpMethod.POST, "/login/renew");
+		web.ignoring().mvcMatchers(HttpMethod.POST, "/v1/auth/renew");
 	}
 
 	@Override
