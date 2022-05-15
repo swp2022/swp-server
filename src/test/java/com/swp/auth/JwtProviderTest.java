@@ -18,6 +18,7 @@ import com.swp.auth.dto.TokenRequestDto;
 import com.swp.auth.dto.TokenResponseDto;
 import com.swp.auth.exception.InvalidTokenException;
 import com.swp.auth.exception.TokenException;
+import com.swp.common.exception.ApiException;
 import com.swp.user.domain.Role;
 
 import io.jsonwebtoken.Claims;
@@ -38,8 +39,8 @@ class JwtProviderTest {
 	private static final String providerIdExpected = "12333333";
 	private static final String roleExpected = Role.USER.toString();
 
-	public JwtProviderTest(@Value("${app.auth.jwtSecret}") String accessTokenSecret,
-		@Value("${app.auth.jwtRefreshSecret}") String refreshTokenSecret) {
+	public JwtProviderTest(@Value("${app.auth.accessTokenSecret}") String accessTokenSecret,
+		@Value("${app.auth.refreshTokenSecret}") String refreshTokenSecret) {
 		byte[] secretBytes = Base64.getEncoder().encode(accessTokenSecret.getBytes(StandardCharsets.UTF_8));
 		this.accessTokenSecret = Keys.hmacShaKeyFor(secretBytes);
 		secretBytes = Base64.getEncoder().encode(refreshTokenSecret.getBytes(StandardCharsets.UTF_8));
@@ -126,21 +127,21 @@ class JwtProviderTest {
 	@Test
 	void validateEmptyToken() {
 		assertThatThrownBy(() -> jwtProvider.validate(null))
-			.isInstanceOf(TokenException.class)
+			.isInstanceOf(ApiException.class)
 			.hasMessageContaining("비어있습니다");
 	}
 
 	@Test
 	void validateInvalidToken() {
 		assertThatThrownBy(() -> jwtProvider.validate("IAMINVALIDTOKEN"))
-			.isInstanceOf(TokenException.class)
+			.isInstanceOf(ApiException.class)
 			.hasMessageContaining("비정상");
 	}
 
 	@Test
 	void validateExpiredToken() {
 		assertThatThrownBy(() -> jwtProvider.validate(getExpiredToken()))
-			.isInstanceOf(TokenException.class)
+			.isInstanceOf(ApiException.class)
 			.hasMessageContaining("만료");
 	}
 
@@ -148,12 +149,11 @@ class JwtProviderTest {
 	void renewTokenAccessTokenExpired() {
 		// given, when
 		TokenRequestDto requestDto = TokenRequestDto.builder()
-			.accessToken(getExpiredToken())
 			.refreshToken(responseDto.getRefreshToken())
 			.build();
 		TokenResponseDto renewedToken = jwtProvider.renewToken(requestDto);
 		// then
-		assertThat(renewedToken.getAccessToken()).isNotEqualTo(requestDto.getAccessToken());
+		assertThat(renewedToken.getAccessToken()).isNotBlank();
 		assertThat(renewedToken.getRefreshToken()).isEqualTo(requestDto.getRefreshToken());
 	}
 
@@ -161,12 +161,11 @@ class JwtProviderTest {
 	void renewTokenRefreshTokenNearExpiry() {
 		// given, when
 		TokenRequestDto requestDto = TokenRequestDto.builder()
-			.accessToken(getExpiredToken())
 			.refreshToken(getNearExpiryRefreshToken())
 			.build();
 		TokenResponseDto renewedToken = jwtProvider.renewToken(requestDto);
 		// then
-		assertThat(renewedToken.getAccessToken()).isNotEqualTo(requestDto.getAccessToken());
+		assertThat(renewedToken.getAccessToken()).isNotBlank();
 		assertThat(renewedToken.getRefreshToken()).isNotEqualTo(requestDto.getRefreshToken());
 	}
 
@@ -174,12 +173,11 @@ class JwtProviderTest {
 	void renewTokenBothExpired() {
 		// given, when
 		TokenRequestDto requestDto = TokenRequestDto.builder()
-			.accessToken(getExpiredToken())
 			.refreshToken(getExpiredRefreshToken())
 			.build();
 		// then
 		assertThatThrownBy(()->jwtProvider.renewToken(requestDto))
-			.isInstanceOf(InvalidTokenException.class)
+			.isInstanceOf(ApiException.class)
 			.hasMessageContaining("만료");
 	}
 }
