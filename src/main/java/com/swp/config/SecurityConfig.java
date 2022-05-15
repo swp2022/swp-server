@@ -1,6 +1,8 @@
 package com.swp.config;
 
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -25,6 +27,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
 
 	@Override
+	public void configure(WebSecurity web) throws Exception {
+		web.ignoring().mvcMatchers(HttpMethod.POST, "/v1/auth/renew");
+	}
+
+	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 		http.cors()
 			.and()
@@ -40,12 +47,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
 			.and()
 			.authorizeRequests()
-			.antMatchers("/v1/**")
-			.hasRole(Role.USER.toString())
-			.antMatchers("/login/**")
-			.permitAll()
-			.anyRequest()
-			.authenticated()
+			.antMatchers("/v1/**").hasRole(Role.USER.toString())
+			.anyRequest().authenticated()
 			.and()
 
 			.oauth2Login()
