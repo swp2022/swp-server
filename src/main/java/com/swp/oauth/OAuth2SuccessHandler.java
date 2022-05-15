@@ -39,9 +39,9 @@ public class OAuth2SuccessHandler implements AuthenticationSuccessHandler {
 	public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
 		Authentication authentication) throws IOException, ServletException {
 		OAuth2User oAuth2User = (OAuth2User)authentication.getPrincipal();
-
+		String targetUrl = getTargetUrl(request, oAuth2User);
 		requestRepository.removeAuthorizationRequestCookies(request, response);
-		response.sendRedirect(getTargetUrl(request, oAuth2User));
+		response.sendRedirect(targetUrl);
 	}
 
 	private String getTargetUrl(HttpServletRequest request, OAuth2User oAuth2User) {
