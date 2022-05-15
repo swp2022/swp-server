@@ -20,4 +20,9 @@ spring:
           user-info-uri: https://kapi.kakao.com/v2/user/me
           user-name-attribute: id
 
-frontend.redirect-uri: http://localhost:3000/login/oauth2/code/kakao
+frontend:
+  redirectUri: http://localhost:3000/login/oauth2/code/kakao
+  authorizedRedirectUris: >
+    http://localhost:3000/login/oauth2/code/kakao,
+    https://swp-9wp56ifkv-softwareproject2022n.vercel.app/login/oauth2/code/kakao,
+    http://swp2022.s3-website.ap-northeast-2.amazonaws.com/login/oauth2/code/kakao
