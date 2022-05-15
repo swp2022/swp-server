@@ -7,6 +7,7 @@ import com.swp.user.exception.UserNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @RequiredArgsConstructor
 @Service
@@ -14,6 +15,7 @@ public class RelationshipService {
     private final RelationshipRepository relationshipRepository;
     private final UserRepository userRepository;
 
+    @Transactional
     public void createRelationship(RelationshipRequestDto relationshipRequestDto){
         JwtUserDetails userDetails = (JwtUserDetails)SecurityContextHolder.getContext()
             .getAuthentication()
@@ -28,6 +30,7 @@ public class RelationshipService {
             .build());
     }
 
+    @Transactional
     public void deleteRelationship(RelationshipRequestDto relationshipRequestDto){
         JwtUserDetails userDetails = (JwtUserDetails)SecurityContextHolder.getContext()
                 .getAuthentication()
