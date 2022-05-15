@@ -31,12 +31,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	private final CookieOAuth2AuthorizationRequestRepository oAuth2AuthorizationRequestRepository;
 
 	@Override
-
-	public void configure(WebSecurity web) throws Exception {
-		web.ignoring().antMatchers("/login/renew");
-	}
-
-	@Override
 	public void configure(WebSecurity web) throws Exception {
 		web.ignoring().mvcMatchers(HttpMethod.POST, "/v1/auth/renew");
 	}
