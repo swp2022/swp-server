@@ -8,9 +8,12 @@ import javax.persistence.*;
 import com.swp.common.domain.CreatedAtEntity;
 import com.swp.study.domain.Study;
 import com.swp.user.domain.User;
+import lombok.Builder;
+import lombok.Getter;
 
 @Entity
 @Table(name = "boards")
+@Getter
 public class Board extends CreatedAtEntity {
 
 	@Id
@@ -31,4 +34,15 @@ public class Board extends CreatedAtEntity {
 
 	@OneToMany(mappedBy = "board")
 	private List<Comment> commentList = new ArrayList<>();
+
+	@Builder
+	public Board(User user, Study study, String content){
+		this.study=study;
+		this.content=content;
+	}
+
+	public Board updateContent(String content){
+		this.content=content;
+		return this;
+	}
 }
