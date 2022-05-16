@@ -50,17 +50,18 @@ public class OAuth2SuccessHandler implements AuthenticationSuccessHandler {
 		String role = Role.USER.getValue();
 		TokenResponseDto token = jwtProvider.createToken(provider, providerId, role);
 
-		Optional<String> redirectUri = CookieUtils.getCookie(request,
+		Optional<String> cookieRedirectUri = CookieUtils.getCookie(request,
 			CookieOAuth2AuthorizationRequestRepository.REDIRECT_URI_PARAM_COOKIE_NAME).map(Cookie::getValue);
+		String redirectUri = REDIRECTION_URI;
 
-		if (redirectUri.isPresent() && redirectUri.stream()
+		if (cookieRedirectUri.isPresent() && cookieRedirectUri.stream()
 			.anyMatch(uri -> Arrays.asList(AUTHORIZED_URIS).contains(uri))) {
-			return UriComponentsBuilder.fromUriString(redirectUri.get())
-				.queryParam("accessToken", token.getAccessToken())
-				.queryParam("refreshToken", token.getRefreshToken())
-				.build()
-				.toUriString();
+			redirectUri = cookieRedirectUri.get();
 		}
-		return REDIRECTION_URI;
+		return UriComponentsBuilder.fromUriString(redirectUri)
+			.queryParam("accessToken", token.getAccessToken())
+			.queryParam("refreshToken", token.getRefreshToken())
+			.build()
+			.toUriString();
 	}
 }
