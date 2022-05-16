@@ -33,8 +33,9 @@ public class OAuth2FailureHandler implements AuthenticationFailureHandler {
 	@Override
 	public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response,
 		AuthenticationException exception) throws IOException, ServletException {
+		String targetUrl = getTargetUrl(request);
 		requestRepository.removeAuthorizationRequestCookies(request, response);
-		response.sendRedirect(getTargetUrl(request));
+		response.sendRedirect(targetUrl);
 	}
 
 	private String getTargetUrl(HttpServletRequest request) {
