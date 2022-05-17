@@ -84,7 +84,7 @@ public class BoardService {
         Board board = boardRepository.findById(boardId)
                 .orElseThrow(() -> new BoardNotFoundException("글을 찾을 수 없습니다."));
 
-        return BoardResponseDto.of(board);
+        return BoardResponseDto.from(board);
     }
 
     @Transactional
@@ -94,7 +94,7 @@ public class BoardService {
 
         return boardRepository.findAllByUser(user)
                 .stream()
-                .map(board -> BoardResponseDto.of(board))
+                .map(board -> BoardResponseDto.from(board))
                 .collect(Collectors.toList());
     }
 
@@ -103,7 +103,7 @@ public class BoardService {
         User user = userRepository.findByProviderAndProviderId(userDetails.getProvider(), userDetails.getUsername())
                 .orElseThrow(() -> new UserNotFoundException("없는 유저입니다"));
         return user.getBoardList().stream()
-                .map(board -> BoardResponseDto.of(board))
+                .map(board -> BoardResponseDto.from(board))
                 .collect(Collectors.toList());
     }
 }
