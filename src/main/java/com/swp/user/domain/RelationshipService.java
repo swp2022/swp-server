@@ -16,28 +16,22 @@ public class RelationshipService {
     private final UserRepository userRepository;
 
     @Transactional
-    public void createRelationship(RelationshipRequestDto relationshipRequestDto){
-        JwtUserDetails userDetails = (JwtUserDetails)SecurityContextHolder.getContext()
-            .getAuthentication()
-            .getPrincipal();
-        User fromUser=userRepository.findByProviderAndProviderId(userDetails.getProvider(), userDetails.getUsername())
-            .orElseThrow(() -> new UserNotFoundException("없는 유저입니다"));
-        User toUser= userRepository.findById(relationshipRequestDto.getToUserId())
-            .orElseThrow(() -> new UserNotFoundException("팔로우할 유저를 찾을 수 없습니다."));
+    public void createRelationship(JwtUserDetails userDetails, RelationshipRequestDto relationshipRequestDto) {
+        User fromUser = userRepository.findByProviderAndProviderId(userDetails.getProvider(), userDetails.getUsername())
+                .orElseThrow(() -> new UserNotFoundException("없는 유저입니다"));
+        User toUser = userRepository.findById(relationshipRequestDto.getToUserId())
+                .orElseThrow(() -> new UserNotFoundException("팔로우할 유저를 찾을 수 없습니다."));
         relationshipRepository.save(Relationship.builder()
-            .fromUser(fromUser)
-            .toUser(toUser)
-            .build());
+                .fromUser(fromUser)
+                .toUser(toUser)
+                .build());
     }
 
     @Transactional
-    public void deleteRelationship(RelationshipRequestDto relationshipRequestDto){
-        JwtUserDetails userDetails = (JwtUserDetails)SecurityContextHolder.getContext()
-                .getAuthentication()
-                .getPrincipal();
-        User fromUser=userRepository.findByProviderAndProviderId(userDetails.getProvider(), userDetails.getUsername())
+    public void deleteRelationship(JwtUserDetails userDetails, RelationshipRequestDto relationshipRequestDto) {
+        User fromUser = userRepository.findByProviderAndProviderId(userDetails.getProvider(), userDetails.getUsername())
                 .orElseThrow(() -> new UserNotFoundException("없는 유저입니다"));
-        User toUser= userRepository.findById(relationshipRequestDto.getToUserId())
+        User toUser = userRepository.findById(relationshipRequestDto.getToUserId())
                 .orElseThrow(() -> new UserNotFoundException("팔로우 취소할 유저를 찾을 수 없습니다."));
 
         relationshipRepository.delete(
