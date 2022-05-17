@@ -47,7 +47,7 @@ public class BoardController {
         return boardService.createBoard(userDetails, boardCreateRequestDto);
     }
 
-    @PutMapping(value="/{boardId}")
+    @PutMapping(value = "/{boardId}")
     public void updateBoard(@PathVariable Integer boardId, @RequestBody BoardUpdateRequestDto boardUpdateRequestDto) {
         JwtUserDetails userDetails = (JwtUserDetails) SecurityContextHolder.getContext()
                 .getAuthentication()
