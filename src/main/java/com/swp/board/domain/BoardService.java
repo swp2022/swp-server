@@ -32,14 +32,14 @@ public class BoardService {
     private final StudyRepository studyRepository;
 
     @Transactional
-    public void createBoard(BoardCreateRequestDto boardCreateRequestDto){
+    public void createBoard(BoardCreateRequestDto boardCreateRequestDto) {
         JwtUserDetails userDetails = (JwtUserDetails) SecurityContextHolder.getContext()
                 .getAuthentication()
                 .getPrincipal();
-        User user=userRepository.findByProviderAndProviderId(userDetails.getProvider(), userDetails.getUsername())
+        User user = userRepository.findByProviderAndProviderId(userDetails.getProvider(), userDetails.getUsername())
                 .orElseThrow(() -> new UserNotFoundException("없는 유저입니다"));
 
-        Study study=studyRepository.findById(boardCreateRequestDto.getStudyId())
+        Study study = studyRepository.findById(boardCreateRequestDto.getStudyId())
                 .orElseThrow(() -> new StudyNotFoundException("공부 정보를 찾을 수 없습니다."));
 
         boardRepository.save(Board.builder()
@@ -50,45 +50,47 @@ public class BoardService {
     }
 
     @Transactional
-    public void updateBoard(BoardUpdateRequestDto boardUpdateRequestDto){
-        Board updatedBoard=boardRepository.findById(boardUpdateRequestDto.getBoardId())
+    public void updateBoard(BoardUpdateRequestDto boardUpdateRequestDto) {
+        Board board = boardRepository.findById(boardUpdateRequestDto.getBoardId())
                 .orElseThrow(() -> new BoardNotFoundException("글을 찾을 수 없습니다."));
 
         JwtUserDetails userDetails = (JwtUserDetails) SecurityContextHolder.getContext()
                 .getAuthentication()
                 .getPrincipal();
-        User user=userRepository.findByProviderAndProviderId(userDetails.getProvider(), userDetails.getUsername())
+        User user = userRepository.findByProviderAndProviderId(userDetails.getProvider(), userDetails.getUsername())
                 .orElseThrow(() -> new UserNotFoundException("없는 유저입니다"));
 
-        if(user.equals(updatedBoard.getUser())) {
+        if (user.equals(board.getUser())) {
             //글을 쓴 사람만이 글을 수정할 권한이 있다고 가정함
-            updatedBoard.updateContent(boardUpdateRequestDto.getContent());
-            boardRepository.save(updatedBoard);
+            board.updateContent(boardUpdateRequestDto.getContent());
+            boardRepository.save(board);
+        } else {
+            throw new BoardForbiddenException("글을 수정할 권한이 없습니다.");
         }
-        else { throw new BoardForbiddenException("글을 수정할 권한이 없습니다."); }
     }
 
     @Transactional
-    public void deleteBoard(BoardDeleteRequestDto boardDeleteRequestDto){
-        Board board=boardRepository.findById(boardDeleteRequestDto.getBoardId())
+    public void deleteBoard(BoardDeleteRequestDto boardDeleteRequestDto) {
+        Board board = boardRepository.findById(boardDeleteRequestDto.getBoardId())
                 .orElseThrow(() -> new BoardNotFoundException("글을 찾을 수 없습니다."));
 
         JwtUserDetails userDetails = (JwtUserDetails) SecurityContextHolder.getContext()
                 .getAuthentication()
                 .getPrincipal();
-        User user=userRepository.findByProviderAndProviderId(userDetails.getProvider(), userDetails.getUsername())
+        User user = userRepository.findByProviderAndProviderId(userDetails.getProvider(), userDetails.getUsername())
                 .orElseThrow(() -> new UserNotFoundException("없는 유저입니다"));
 
-        if(user.getRole().equals(Role.ADMIN) || user.equals(board.getUser())){
+        if (user.getRole().equals(Role.ADMIN) || user.equals(board.getUser())) {
             //Admin, 글을 쓴 사람만이 글을 삭제할 권한이 있다고 가정함
             boardRepository.delete(board);
+        } else {
+            throw new BoardForbiddenException("글을 수정할 권한이 없습니다.");
         }
-        else { throw new BoardForbiddenException("글을 수정할 권한이 없습니다."); }
     }
 
     @Transactional
-    public BoardResponseDto getBoard(Integer boardId){
-        Board board=boardRepository.findById(boardId)
+    public BoardResponseDto getBoard(Integer boardId) {
+        Board board = boardRepository.findById(boardId)
                 .orElseThrow(() -> new BoardNotFoundException("글을 찾을 수 없습니다."));
 
         return BoardResponseDto.builder()
@@ -99,8 +101,8 @@ public class BoardService {
     }
 
     @Transactional
-    public List<BoardResponseDto> getBoardListByUserId(Integer userId){
-        User user=userRepository.findById(userId)
+    public List<BoardResponseDto> getBoardListByUserId(Integer userId) {
+        User user = userRepository.findById(userId)
                 .orElseThrow(() -> new UserNotFoundException("없는 유저입니다"));
 
         return boardRepository.findAllByUser(user)
@@ -114,11 +116,11 @@ public class BoardService {
     }
 
     @Transactional
-    public List<BoardResponseDto> getMyBoardList(){
+    public List<BoardResponseDto> getMyBoardList() {
         JwtUserDetails userDetails = (JwtUserDetails) SecurityContextHolder.getContext()
                 .getAuthentication()
                 .getPrincipal();
-        User user=userRepository.findByProviderAndProviderId(userDetails.getProvider(), userDetails.getUsername())
+        User user = userRepository.findByProviderAndProviderId(userDetails.getProvider(), userDetails.getUsername())
                 .orElseThrow(() -> new UserNotFoundException("없는 유저입니다"));
         return user.getBoardList().stream()
                 .map(board -> BoardResponseDto.builder()

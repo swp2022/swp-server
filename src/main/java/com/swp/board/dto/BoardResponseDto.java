@@ -13,6 +13,6 @@ public class BoardResponseDto {
     private String nickname;
     // Study 내용 추가 예정
     private String content;
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss", timezone = "Asia/Seoul")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", locale = "Asia/Seoul")
     private LocalDateTime createdAt;
 }

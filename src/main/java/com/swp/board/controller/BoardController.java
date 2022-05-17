@@ -14,42 +14,43 @@ import java.util.List;
 
 @RequiredArgsConstructor
 @RestController
+@RequestMapping(value = "/v1/board")
 public class BoardController {
     private final BoardService boardService;
 
-    @GetMapping(value="/v1/board/{boardId}")
+    @GetMapping(value = "/{boardId}")
     @ResponseStatus(HttpStatus.OK)
     public BoardResponseDto getBoard(@PathVariable Integer boardId) {
         return boardService.getBoard(boardId);
     }
 
-    @GetMapping(value="/v1/board/user/{userId}")
+    @GetMapping(value = "/user/{userId}")
     @ResponseStatus(HttpStatus.OK)
-    public List<BoardResponseDto> getAllBoardListByUserId(@PathVariable Integer userId){
+    public List<BoardResponseDto> getAllBoardListByUserId(@PathVariable Integer userId) {
         return boardService.getBoardListByUserId(userId);
     }
 
-    @GetMapping(value="/v1/board/my")
+    @GetMapping(value = "/my")
     @ResponseStatus(HttpStatus.OK)
-    public List<BoardResponseDto> getMyBoardList(){
+    public List<BoardResponseDto> getMyBoardList() {
         return boardService.getMyBoardList();
     }
 
-    @PostMapping(value="/v1/board")
+    @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public void createBoard(@RequestBody BoardCreateRequestDto boardCreateRequestDto){
+    public void createBoard(@RequestBody BoardCreateRequestDto boardCreateRequestDto) {
         boardService.createBoard(boardCreateRequestDto);
     }
 
-    @PutMapping(value="/v1/board")
+    @PutMapping
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void updateBoard(@RequestBody BoardUpdateRequestDto boardUpdateRequestDto){
+    public void updateBoard(@RequestBody BoardUpdateRequestDto boardUpdateRequestDto) {
         boardService.updateBoard(boardUpdateRequestDto);
     }
 
-    @DeleteMapping(value="/v1/board")
+    @DeleteMapping
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteBoard(@RequestBody BoardDeleteRequestDto boardDeleteRequestDto){
+    public void deleteBoard(@RequestBody BoardDeleteRequestDto boardDeleteRequestDto) {
         boardService.deleteBoard(boardDeleteRequestDto);
     }
 }
