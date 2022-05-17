@@ -1,5 +1,6 @@
 package com.swp.board.controller;
 
+import com.swp.board.domain.Board;
 import com.swp.board.domain.BoardService;
 import com.swp.board.dto.BoardDeleteRequestDto;
 import com.swp.board.dto.BoardCreateRequestDto;
@@ -26,6 +27,12 @@ public class BoardController {
     @ResponseStatus(HttpStatus.OK)
     public List<BoardResponseDto> getAllBoardListByUserId(@PathVariable Integer userId){
         return boardService.getBoardListByUserId(userId);
+    }
+
+    @GetMapping(value="/v1/board/my")
+    @ResponseStatus(HttpStatus.OK)
+    public List<BoardResponseDto> getMyBoardList(){
+        return boardService.getMyBoardList();
     }
 
     @PostMapping(value="/v1/board")

@@ -112,4 +112,20 @@ public class BoardService {
                         .build())
                 .collect(Collectors.toList());
     }
+
+    @Transactional
+    public List<BoardResponseDto> getMyBoardList(){
+        JwtUserDetails userDetails = (JwtUserDetails) SecurityContextHolder.getContext()
+                .getAuthentication()
+                .getPrincipal();
+        User user=userRepository.findByProviderAndProviderId(userDetails.getProvider(), userDetails.getUsername())
+                .orElseThrow(() -> new UserNotFoundException("없는 유저입니다"));
+        return user.getBoardList().stream()
+                .map(board -> BoardResponseDto.builder()
+                        .nickname(board.getUser().getNickname())
+                        .content(board.getContent())
+                        .createdAt(board.getCreatedAt())
+                        .build())
+                .collect(Collectors.toList());
+    }
 }
