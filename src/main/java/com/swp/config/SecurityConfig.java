@@ -32,7 +32,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
 	@Override
 	public void configure(WebSecurity web) throws Exception {
-		web.ignoring().mvcMatchers(HttpMethod.POST, "/v1/auth/renew");
+		web.ignoring()
+			.mvcMatchers(HttpMethod.POST, "/v1/auth/renew")
+			.mvcMatchers(HttpMethod.GET, "/v3/api-docs")
+			.mvcMatchers(HttpMethod.GET, "/docs", "/swagger-ui/**", "/swagger-resources/**");
 	}
 
 	@Override
