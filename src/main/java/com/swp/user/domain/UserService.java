@@ -2,8 +2,6 @@ package com.swp.user.domain;
 
 import java.util.NoSuchElementException;
 
-import com.swp.auth.dto.JwtUserDetails;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import com.swp.user.dto.UserResponseDto;
