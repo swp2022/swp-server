@@ -86,9 +86,11 @@ public class BoardService {
         else { throw new BoardForbiddenException("글을 수정할 권한이 없습니다."); }
     }
 
+    @Transactional
     public BoardResponseDto getBoard(Integer boardId){
         Board board=boardRepository.findById(boardId)
                 .orElseThrow(() -> new BoardNotFoundException("글을 찾을 수 없습니다."));
+
         return BoardResponseDto.builder()
                 .nickname(board.getUser().getNickname())
                 .content(board.getContent())
@@ -96,6 +98,7 @@ public class BoardService {
                 .build();
     }
 
+    @Transactional
     public List<BoardResponseDto> getBoardListByUserId(Integer userId){
         User user=userRepository.findById(userId)
                 .orElseThrow(() -> new UserNotFoundException("없는 유저입니다"));

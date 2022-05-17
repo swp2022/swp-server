@@ -10,10 +10,12 @@ import com.swp.study.domain.Study;
 import com.swp.user.domain.User;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 
 @Entity
 @Table(name = "boards")
 @Getter
+@RequiredArgsConstructor
 public class Board extends CreatedAtEntity {
 
 	@Id
@@ -37,6 +39,7 @@ public class Board extends CreatedAtEntity {
 
 	@Builder
 	public Board(User user, Study study, String content){
+		this.user=user;
 		this.study=study;
 		this.content=content;
 	}

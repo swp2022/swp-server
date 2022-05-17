@@ -7,7 +7,5 @@ import java.util.List;
 import java.util.Optional;
 
 public interface BoardRepository extends JpaRepository<Board, Integer> {
-    Optional<Board> findById(Integer id);
-
     List<Board> findAllByUser(User user);
 }
