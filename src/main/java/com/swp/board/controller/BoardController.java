@@ -1,5 +1,6 @@
 package com.swp.board.controller;
 
+import com.swp.auth.dto.JwtUserDetails;
 import com.swp.board.domain.Board;
 import com.swp.board.domain.BoardService;
 import com.swp.board.dto.BoardDeleteRequestDto;
@@ -8,6 +9,7 @@ import com.swp.board.dto.BoardResponseDto;
 import com.swp.board.dto.BoardUpdateRequestDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -33,24 +35,36 @@ public class BoardController {
     @GetMapping(value = "/my")
     @ResponseStatus(HttpStatus.OK)
     public List<BoardResponseDto> getMyBoardList() {
-        return boardService.getMyBoardList();
+        JwtUserDetails userDetails = (JwtUserDetails) SecurityContextHolder.getContext()
+                .getAuthentication()
+                .getPrincipal();
+        return boardService.getMyBoardList(userDetails);
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public void createBoard(@RequestBody BoardCreateRequestDto boardCreateRequestDto) {
-        boardService.createBoard(boardCreateRequestDto);
+        JwtUserDetails userDetails = (JwtUserDetails) SecurityContextHolder.getContext()
+                .getAuthentication()
+                .getPrincipal();
+        boardService.createBoard(userDetails, boardCreateRequestDto);
     }
 
     @PutMapping
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void updateBoard(@RequestBody BoardUpdateRequestDto boardUpdateRequestDto) {
-        boardService.updateBoard(boardUpdateRequestDto);
+        JwtUserDetails userDetails = (JwtUserDetails) SecurityContextHolder.getContext()
+                .getAuthentication()
+                .getPrincipal();
+        boardService.updateBoard(userDetails, boardUpdateRequestDto);
     }
 
     @DeleteMapping
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteBoard(@RequestBody BoardDeleteRequestDto boardDeleteRequestDto) {
-        boardService.deleteBoard(boardDeleteRequestDto);
+        JwtUserDetails userDetails = (JwtUserDetails) SecurityContextHolder.getContext()
+                .getAuthentication()
+                .getPrincipal();
+        boardService.deleteBoard(userDetails, boardDeleteRequestDto);
     }
 }

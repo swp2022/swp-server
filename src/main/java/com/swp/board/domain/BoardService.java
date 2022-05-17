@@ -15,7 +15,6 @@ import com.swp.user.domain.User;
 import com.swp.user.domain.UserRepository;
 import com.swp.user.exception.UserNotFoundException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -32,10 +31,7 @@ public class BoardService {
     private final StudyRepository studyRepository;
 
     @Transactional
-    public void createBoard(BoardCreateRequestDto boardCreateRequestDto) {
-        JwtUserDetails userDetails = (JwtUserDetails) SecurityContextHolder.getContext()
-                .getAuthentication()
-                .getPrincipal();
+    public void createBoard(JwtUserDetails userDetails, BoardCreateRequestDto boardCreateRequestDto) {
         User user = userRepository.findByProviderAndProviderId(userDetails.getProvider(), userDetails.getUsername())
                 .orElseThrow(() -> new UserNotFoundException("없는 유저입니다"));
 
@@ -50,13 +46,10 @@ public class BoardService {
     }
 
     @Transactional
-    public void updateBoard(BoardUpdateRequestDto boardUpdateRequestDto) {
+    public void updateBoard(JwtUserDetails userDetails, BoardUpdateRequestDto boardUpdateRequestDto) {
         Board board = boardRepository.findById(boardUpdateRequestDto.getBoardId())
                 .orElseThrow(() -> new BoardNotFoundException("글을 찾을 수 없습니다."));
 
-        JwtUserDetails userDetails = (JwtUserDetails) SecurityContextHolder.getContext()
-                .getAuthentication()
-                .getPrincipal();
         User user = userRepository.findByProviderAndProviderId(userDetails.getProvider(), userDetails.getUsername())
                 .orElseThrow(() -> new UserNotFoundException("없는 유저입니다"));
 
@@ -70,13 +63,10 @@ public class BoardService {
     }
 
     @Transactional
-    public void deleteBoard(BoardDeleteRequestDto boardDeleteRequestDto) {
+    public void deleteBoard(JwtUserDetails userDetails, BoardDeleteRequestDto boardDeleteRequestDto) {
         Board board = boardRepository.findById(boardDeleteRequestDto.getBoardId())
                 .orElseThrow(() -> new BoardNotFoundException("글을 찾을 수 없습니다."));
 
-        JwtUserDetails userDetails = (JwtUserDetails) SecurityContextHolder.getContext()
-                .getAuthentication()
-                .getPrincipal();
         User user = userRepository.findByProviderAndProviderId(userDetails.getProvider(), userDetails.getUsername())
                 .orElseThrow(() -> new UserNotFoundException("없는 유저입니다"));
 
@@ -116,10 +106,7 @@ public class BoardService {
     }
 
     @Transactional
-    public List<BoardResponseDto> getMyBoardList() {
-        JwtUserDetails userDetails = (JwtUserDetails) SecurityContextHolder.getContext()
-                .getAuthentication()
-                .getPrincipal();
+    public List<BoardResponseDto> getMyBoardList(JwtUserDetails userDetails) {
         User user = userRepository.findByProviderAndProviderId(userDetails.getProvider(), userDetails.getUsername())
                 .orElseThrow(() -> new UserNotFoundException("없는 유저입니다"));
         return user.getBoardList().stream()
