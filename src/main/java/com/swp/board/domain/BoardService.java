@@ -48,8 +48,8 @@ public class BoardService {
     }
 
     @Transactional
-    public void updateBoard(JwtUserDetails userDetails, BoardUpdateRequestDto boardUpdateRequestDto) {
-        Board board = boardRepository.findById(boardUpdateRequestDto.getBoardId())
+    public void updateBoard(JwtUserDetails userDetails, Integer boardId, BoardUpdateRequestDto boardUpdateRequestDto) {
+        Board board = boardRepository.findById(boardId)
                 .orElseThrow(() -> new BoardNotFoundException("글을 찾을 수 없습니다."));
 
         User user = userRepository.findByProviderAndProviderId(userDetails.getProvider(), userDetails.getUsername())

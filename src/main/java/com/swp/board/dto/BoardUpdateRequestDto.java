@@ -10,6 +10,5 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Getter
 public class BoardUpdateRequestDto {
-    private Integer boardId;
     private String content;
 }

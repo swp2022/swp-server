@@ -11,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
+import javax.persistence.criteria.CriteriaBuilder;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -46,12 +47,12 @@ public class BoardController {
         return boardService.createBoard(userDetails, boardCreateRequestDto);
     }
 
-    @PutMapping
-    public void updateBoard(@RequestBody BoardUpdateRequestDto boardUpdateRequestDto) {
+    @PutMapping(value="/{boardId}")
+    public void updateBoard(@PathVariable Integer boardId, @RequestBody BoardUpdateRequestDto boardUpdateRequestDto) {
         JwtUserDetails userDetails = (JwtUserDetails) SecurityContextHolder.getContext()
                 .getAuthentication()
                 .getPrincipal();
-        boardService.updateBoard(userDetails, boardUpdateRequestDto);
+        boardService.updateBoard(userDetails, boardId, boardUpdateRequestDto);
     }
 
     @DeleteMapping(value = "/{boardId}")
