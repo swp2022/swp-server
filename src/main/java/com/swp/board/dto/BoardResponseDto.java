@@ -18,7 +18,7 @@ public class BoardResponseDto {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", locale = "Asia/Seoul")
     private LocalDateTime createdAt;
 
-    public static BoardResponseDto from(Board board) {
+    public static BoardResponseDto of(Board board) {
         return BoardResponseDto.builder()
                 .nickname(board.getUser().getNickname())
                 .content(board.getContent())

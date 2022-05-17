@@ -17,19 +17,19 @@ public class RelationshipController {
 
     @PostMapping(value = "/v1/relationship")
     @ResponseStatus(HttpStatus.CREATED)
-    public void followUser(@RequestBody RelationshipRequestDto relationshipRequestDto) {
+    public void followUser(@RequestBody RelationshipRequestDto relationshipRequestDto){
         JwtUserDetails userDetails = (JwtUserDetails) SecurityContextHolder.getContext()
                 .getAuthentication()
                 .getPrincipal();
-        relationshipService.createRelationship(userDetails, relationshipRequestDto);
+        relationshipService.createRelationship(relationshipRequestDto);
     }
 
     @DeleteMapping(value = "/v1/relationship")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void unfollowUser(@RequestBody RelationshipRequestDto relationshipRequestDto) {
-        JwtUserDetails userDetails = (JwtUserDetails) SecurityContextHolder.getContext()
+    public void unfollowUser(@RequestBody RelationshipRequestDto relationshipRequestDto){
+        JwtUserDetails userDetails = (JwtUserDetails)SecurityContextHolder.getContext()
                 .getAuthentication()
                 .getPrincipal();
-        relationshipService.deleteRelationship(userDetails, relationshipRequestDto);
+        relationshipService.deleteRelationship(relationshipRequestDto);
     }
 }
