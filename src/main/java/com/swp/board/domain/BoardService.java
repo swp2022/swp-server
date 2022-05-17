@@ -1,8 +1,8 @@
 package com.swp.board.domain;
 
 import com.swp.auth.dto.JwtUserDetails;
-import com.swp.board.dto.BoardDeleteRequestDto;
 import com.swp.board.dto.BoardCreateRequestDto;
+import com.swp.board.dto.BoardCreateResponseDto;
 import com.swp.board.dto.BoardResponseDto;
 import com.swp.board.dto.BoardUpdateRequestDto;
 import com.swp.board.exception.BoardForbiddenException;
@@ -31,18 +31,20 @@ public class BoardService {
     private final StudyRepository studyRepository;
 
     @Transactional
-    public void createBoard(JwtUserDetails userDetails, BoardCreateRequestDto boardCreateRequestDto) {
+    public BoardCreateResponseDto createBoard(JwtUserDetails userDetails, BoardCreateRequestDto boardCreateRequestDto) {
         User user = userRepository.findByProviderAndProviderId(userDetails.getProvider(), userDetails.getUsername())
                 .orElseThrow(() -> new UserNotFoundException("없는 유저입니다"));
 
         Study study = studyRepository.findById(boardCreateRequestDto.getStudyId())
                 .orElseThrow(() -> new StudyNotFoundException("공부 정보를 찾을 수 없습니다."));
 
-        boardRepository.save(Board.builder()
-                .user(user)
-                .study(study)
-                .content(boardCreateRequestDto.getContent())
-                .build());
+        return BoardCreateResponseDto.builder()
+                .boardId(boardRepository.save(Board.builder()
+                        .user(user)
+                        .study(study)
+                        .content(boardCreateRequestDto.getContent())
+                        .build()).getBoardId())
+                .build();
     }
 
     @Transactional
@@ -56,15 +58,14 @@ public class BoardService {
         if (user.equals(board.getUser())) {
             //글을 쓴 사람만이 글을 수정할 권한이 있다고 가정함
             board.updateContent(boardUpdateRequestDto.getContent());
-            boardRepository.save(board);
         } else {
             throw new BoardForbiddenException("글을 수정할 권한이 없습니다.");
         }
     }
 
     @Transactional
-    public void deleteBoard(JwtUserDetails userDetails, BoardDeleteRequestDto boardDeleteRequestDto) {
-        Board board = boardRepository.findById(boardDeleteRequestDto.getBoardId())
+    public void deleteBoard(JwtUserDetails userDetails, Integer boardId) {
+        Board board = boardRepository.findById(boardId)
                 .orElseThrow(() -> new BoardNotFoundException("글을 찾을 수 없습니다."));
 
         User user = userRepository.findByProviderAndProviderId(userDetails.getProvider(), userDetails.getUsername())
@@ -74,7 +75,7 @@ public class BoardService {
             //Admin, 글을 쓴 사람만이 글을 삭제할 권한이 있다고 가정함
             boardRepository.delete(board);
         } else {
-            throw new BoardForbiddenException("글을 수정할 권한이 없습니다.");
+            throw new BoardForbiddenException("글을 삭제할 권한이 없습니다.");
         }
     }
 
@@ -83,11 +84,7 @@ public class BoardService {
         Board board = boardRepository.findById(boardId)
                 .orElseThrow(() -> new BoardNotFoundException("글을 찾을 수 없습니다."));
 
-        return BoardResponseDto.builder()
-                .nickname(board.getUser().getNickname())
-                .content(board.getContent())
-                .createdAt(board.getCreatedAt())
-                .build();
+        return BoardResponseDto.of(board);
     }
 
     @Transactional
@@ -97,11 +94,7 @@ public class BoardService {
 
         return boardRepository.findAllByUser(user)
                 .stream()
-                .map(board -> BoardResponseDto.builder()
-                        .nickname(board.getUser().getNickname())
-                        .content(board.getContent())
-                        .createdAt(board.getCreatedAt())
-                        .build())
+                .map(board -> BoardResponseDto.of(board))
                 .collect(Collectors.toList());
     }
 
@@ -110,11 +103,7 @@ public class BoardService {
         User user = userRepository.findByProviderAndProviderId(userDetails.getProvider(), userDetails.getUsername())
                 .orElseThrow(() -> new UserNotFoundException("없는 유저입니다"));
         return user.getBoardList().stream()
-                .map(board -> BoardResponseDto.builder()
-                        .nickname(board.getUser().getNickname())
-                        .content(board.getContent())
-                        .createdAt(board.getCreatedAt())
-                        .build())
+                .map(board -> BoardResponseDto.of(board))
                 .collect(Collectors.toList());
     }
 }

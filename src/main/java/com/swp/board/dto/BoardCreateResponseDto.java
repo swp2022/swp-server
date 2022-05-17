@@ -1,11 +1,12 @@
 package com.swp.board.dto;
 
+
 import lombok.*;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Getter
-public class BoardDeleteRequestDto {
+@Builder
+public class BoardCreateResponseDto {
     private Integer boardId;
 }
