@@ -10,11 +10,13 @@ import com.swp.board.exception.BoardNotFoundException;
 import com.swp.study.Exception.StudyNotFoundException;
 import com.swp.study.domain.Study;
 import com.swp.study.domain.StudyRepository;
+import com.swp.user.domain.Relationship;
 import com.swp.user.domain.Role;
 import com.swp.user.domain.User;
 import com.swp.user.domain.UserRepository;
 import com.swp.user.exception.UserNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -105,5 +107,17 @@ public class BoardService {
         return user.getBoardList().stream()
                 .map(board -> BoardResponseDto.of(board))
                 .collect(Collectors.toList());
+    }
+
+    @Transactional
+    public List<BoardResponseDto> getFollowingUserBoard(JwtUserDetails userDetails, Pageable pageable) {
+        User user = userRepository.findByProviderAndProviderId(userDetails.getProvider(), userDetails.getUsername())
+                .orElseThrow(() -> new UserNotFoundException("없는 유저입니다"));
+
+        return boardRepository.findAllByUserIn(
+                user.getFollowingList().stream()
+                        .map(Relationship::getToUser)
+                        .collect(Collectors.toList()), pageable
+        ).stream().map(board -> BoardResponseDto.of(board)).collect(Collectors.toList());
     }
 }

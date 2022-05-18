@@ -7,6 +7,8 @@ import com.swp.board.dto.BoardCreateResponseDto;
 import com.swp.board.dto.BoardResponseDto;
 import com.swp.board.dto.BoardUpdateRequestDto;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
@@ -28,6 +30,14 @@ public class BoardController {
     @GetMapping(value = "/user/{userId}")
     public List<BoardResponseDto> getAllBoardListByUserId(@PathVariable Integer userId) {
         return boardService.getBoardListByUserId(userId);
+    }
+
+    @GetMapping(value = "/follow")
+    public List<BoardResponseDto> getFollowingBoardList(@PageableDefault(size = 20) Pageable pageable) {
+        JwtUserDetails userDetails = (JwtUserDetails) SecurityContextHolder.getContext()
+                .getAuthentication()
+                .getPrincipal();
+        return boardService.getFollowingUserBoard(userDetails, pageable);
     }
 
     @GetMapping(value = "/my")
