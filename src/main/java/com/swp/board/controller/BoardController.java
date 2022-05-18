@@ -2,16 +2,21 @@ package com.swp.board.controller;
 
 import com.swp.auth.dto.JwtUserDetails;
 import com.swp.board.domain.BoardService;
+import com.swp.board.domain.CommentService;
 import com.swp.board.dto.BoardCreateRequestDto;
 import com.swp.board.dto.BoardCreateResponseDto;
 import com.swp.board.dto.BoardResponseDto;
 import com.swp.board.dto.BoardUpdateRequestDto;
+import com.swp.board.dto.CommentCreateRequestDto;
+import com.swp.board.dto.CommentResponseDto;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
-import javax.persistence.criteria.CriteriaBuilder;
+import javax.validation.constraints.NotNull;
+
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -19,6 +24,7 @@ import java.util.List;
 @RequestMapping(value = "/v1/board")
 public class BoardController {
     private final BoardService boardService;
+    private final CommentService commentService;
 
     @GetMapping(value = "/{boardId}")
     public BoardResponseDto getBoard(@PathVariable Integer boardId) {
@@ -62,5 +68,20 @@ public class BoardController {
                 .getAuthentication()
                 .getPrincipal();
         boardService.deleteBoard(userDetails, boardId);
+    }
+
+    @GetMapping("/{boardId}/comment")
+    public List<CommentResponseDto> getComments(@PathVariable Integer boardId) {
+        return commentService.getComments(boardId);
+    }
+
+    @ResponseStatus(HttpStatus.CREATED)
+    @PostMapping("/{boardId}/comment")
+    public CommentResponseDto writeComment(@PathVariable Integer boardId,
+        @RequestBody CommentCreateRequestDto requestDto) {
+        JwtUserDetails userDetails = (JwtUserDetails) SecurityContextHolder.getContext()
+            .getAuthentication()
+            .getPrincipal();
+        return commentService.writeComment(userDetails, boardId, requestDto);
     }
 }
