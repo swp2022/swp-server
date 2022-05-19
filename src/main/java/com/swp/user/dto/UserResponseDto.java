@@ -1,6 +1,7 @@
 package com.swp.user.dto;
 
 import com.swp.user.domain.Role;
+import com.swp.user.domain.User;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -12,8 +13,19 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 public class UserResponseDto {
+	private Integer userId;
 	private Role role;
 	private String email;
 	private String nickname;
 	private String profileImage;
+
+	public static UserResponseDto from(User user) {
+		return UserResponseDto.builder()
+			.userId(user.getId())
+			.role(user.getRole())
+			.nickname(user.getNickname())
+			.email(user.getEmail())
+			.profileImage(user.getProfileImage())
+			.build();
+	}
 }
