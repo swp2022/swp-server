@@ -60,7 +60,7 @@ public class CommentService {
 			.filter(c -> c.getBoard().equals(board))
 			.orElseThrow(CommentNotFoundException::new);
 
-		if (comment.getUser().equals(user) || user.getRole().equals(Role.ADMIN)) {
+		if (comment.getUser().equals(user) || user.getRole().equals(Role.ADMIN) || board.getUser().equals(user)) {
 			commentRepository.delete(comment);
 		} else {
 			throw new CommentForbiddenException();
