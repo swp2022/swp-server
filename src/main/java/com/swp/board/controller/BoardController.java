@@ -15,6 +15,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
 import java.util.List;
@@ -78,7 +79,7 @@ public class BoardController {
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/{boardId}/comment")
     public CommentResponseDto writeComment(@PathVariable Integer boardId,
-        @RequestBody CommentCreateRequestDto requestDto) {
+        @Valid @RequestBody CommentCreateRequestDto requestDto) {
         JwtUserDetails userDetails = (JwtUserDetails) SecurityContextHolder.getContext()
             .getAuthentication()
             .getPrincipal();
