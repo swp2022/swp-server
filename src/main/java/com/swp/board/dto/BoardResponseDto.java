@@ -20,6 +20,7 @@ public class BoardResponseDto {
 
     public static BoardResponseDto from(Board board) {
         return BoardResponseDto.builder()
+                .boardId((board.getBoardId()))
                 .nickname(board.getUser().getNickname())
                 .content(board.getContent())
                 .createdAt(board.getCreatedAt())
