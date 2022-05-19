@@ -67,7 +67,7 @@ public class CommentService {
 		}
 	}
 
-	@Transactional
+	@Transactional(readOnly = true)
 	public List<CommentResponseDto> getComments(Integer boardId) {
 		Board board = boardRepository.findById(boardId)
 			.orElseThrow(() -> new BoardNotFoundException("글을 찾을 수 없습니다"));
