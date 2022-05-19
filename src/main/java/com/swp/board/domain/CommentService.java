@@ -1,7 +1,8 @@
 package com.swp.board.domain;
 
+import static java.util.stream.Collectors.*;
+
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -48,11 +49,15 @@ public class CommentService {
 	}
 
 	@Transactional
-	public void deleteComment(JwtUserDetails userDetails, Integer commentId) {
+	public void deleteComment(JwtUserDetails userDetails, Integer boardId, Integer commentId) {
 		User user = userRepository.findByProviderAndProviderId(userDetails.getProvider(), userDetails.getUsername())
 			.orElseThrow(() -> new UserNotFoundException("없는 유저입니다"));
 
+		Board board = boardRepository.findById(boardId)
+			.orElseThrow(() -> new BoardNotFoundException("글을 찾을 수 없습니다"));
+
 		Comment comment = commentRepository.findById(commentId)
+			.filter(c -> c.getBoard().equals(board))
 			.orElseThrow(CommentNotFoundException::new);
 
 		if (comment.getUser().equals(user) || user.getRole().equals(Role.ADMIN)) {
@@ -62,6 +67,7 @@ public class CommentService {
 		}
 	}
 
+	@Transactional
 	public List<CommentResponseDto> getComments(Integer boardId) {
 		Board board = boardRepository.findById(boardId)
 			.orElseThrow(() -> new BoardNotFoundException("글을 찾을 수 없습니다"));
@@ -69,6 +75,6 @@ public class CommentService {
 		return board.getCommentList()
 			.stream()
 			.map(CommentResponseDto::from)
-			.collect(Collectors.toList());
+			.collect(toList());
 	}
 }

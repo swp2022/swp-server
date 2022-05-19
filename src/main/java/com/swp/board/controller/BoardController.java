@@ -10,13 +10,13 @@ import com.swp.board.dto.BoardUpdateRequestDto;
 import com.swp.board.dto.CommentCreateRequestDto;
 import com.swp.board.dto.CommentResponseDto;
 
+import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
 
 import java.util.List;
 
@@ -71,11 +71,13 @@ public class BoardController {
         boardService.deleteBoard(userDetails, boardId);
     }
 
+    @ApiOperation("댓글 가져오기")
     @GetMapping("/{boardId}/comment")
     public List<CommentResponseDto> getComments(@PathVariable Integer boardId) {
         return commentService.getComments(boardId);
     }
 
+    @ApiOperation("댓글 작성")
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/{boardId}/comment")
     public CommentResponseDto writeComment(@PathVariable Integer boardId,
@@ -84,5 +86,15 @@ public class BoardController {
             .getAuthentication()
             .getPrincipal();
         return commentService.writeComment(userDetails, boardId, requestDto);
+    }
+
+    @ApiOperation(value = "댓글 삭제", notes = "댓글이 속한 boardId로 요청해야 합니다")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @DeleteMapping("/{boardId}/comment/{commentId}")
+    public void deleteComment(@PathVariable Integer boardId, @PathVariable Integer commentId) {
+        JwtUserDetails userDetails = (JwtUserDetails) SecurityContextHolder.getContext()
+            .getAuthentication()
+            .getPrincipal();
+        commentService.deleteComment(userDetails, boardId, commentId);
     }
 }

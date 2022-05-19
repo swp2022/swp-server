@@ -28,9 +28,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 		if (exception instanceof ApiException) {
 			return handleExceptionInternal(exception, null, new HttpHeaders(), ((ApiException)exception).getStatus(),
 				request);
-		} else if (exception instanceof MethodArgumentNotValidException)
-			return handleExceptionInternal(exception, null, new HttpHeaders(), BAD_REQUEST, request);
-		else
+		} else
 			return handleExceptionInternal(exception, null, new HttpHeaders(), INTERNAL_SERVER_ERROR, request);
 	}
 
