@@ -5,6 +5,7 @@ import static java.util.stream.Collectors.*;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.swp.auth.dto.JwtUserDetails;
 import com.swp.user.dto.UserResponseDto;
@@ -24,6 +25,7 @@ public class UserService {
 		return UserResponseDto.from(user);
 	}
 
+	@Transactional(readOnly = true)
 	public List<UserResponseDto> getFollowers(JwtUserDetails userDetails) {
 		User user = userRepository.findByProviderAndProviderId(userDetails.getProvider(), userDetails.getUsername())
 			.orElseThrow(() -> new UserNotFoundException("없는 유저입니다"));
@@ -33,6 +35,7 @@ public class UserService {
 			.collect(toList());
 	}
 
+	@Transactional(readOnly = true)
 	public List<UserResponseDto> getFollowers(Integer userId) {
 		User user = userRepository.findById(userId)
 			.orElseThrow(() -> new UserNotFoundException("없는 유저입니다"));
@@ -42,6 +45,7 @@ public class UserService {
 			.collect(toList());
 	}
 
+	@Transactional(readOnly = true)
 	public List<UserResponseDto> getFollowings(JwtUserDetails userDetails) {
 		User user = userRepository.findByProviderAndProviderId(userDetails.getProvider(), userDetails.getUsername())
 			.orElseThrow(() -> new UserNotFoundException("없는 유저입니다"));
@@ -51,6 +55,7 @@ public class UserService {
 			.collect(toList());
 	}
 
+	@Transactional(readOnly = true)
 	public List<UserResponseDto> getFollowings(Integer userId) {
 		User user = userRepository.findById(userId)
 			.orElseThrow(() -> new UserNotFoundException("없는 유저입니다"));
