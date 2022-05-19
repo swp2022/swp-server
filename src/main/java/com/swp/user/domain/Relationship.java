@@ -1,11 +1,13 @@
 package com.swp.user.domain;
 import lombok.Builder;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
 @NoArgsConstructor
 @Entity
+@Getter
 @Table(name = "relationships")
 public class Relationship {
 
