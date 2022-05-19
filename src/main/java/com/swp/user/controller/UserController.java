@@ -10,16 +10,18 @@ import com.swp.user.dto.UserResponseDto;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
+@RequestMapping("/v1/user")
 @RestController
 public class UserController {
 
 	private final UserService userService;
 
-	@GetMapping(value = "/v1/user")
+	@ApiOperation("자신의 정보 가져오기")
+	@GetMapping
 	public UserResponseDto getUser() {
 		JwtUserDetails userDetails = (JwtUserDetails)SecurityContextHolder.getContext()
 			.getAuthentication()
 			.getPrincipal();
-		return userService.getUser(userDetails.getProvider(), userDetails.getUsername());
+		return userService.getUser(userDetails);
 	}
 }

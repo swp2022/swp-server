@@ -15,14 +15,9 @@ public class UserService {
 
 	private final UserRepository userRepository;
 
-	public UserResponseDto getUser(String provider, String providerId) {
-		User user = userRepository.findByProviderAndProviderId(provider, providerId)
+	public UserResponseDto getUser(JwtUserDetails userDetails) {
+		User user = userRepository.findByProviderAndProviderId(userDetails.getProvider(), userDetails.getUsername())
 			.orElseThrow(() -> new UserNotFoundException("없는 유저입니다"));
-		return UserResponseDto.builder()
-			.nickname(user.getNickname())
-			.email(user.getEmail())
-			.profileImage(user.getProfileImage())
-			.role(user.getRole())
-			.build();
+		return UserResponseDto.from(user);
 	}
 }
