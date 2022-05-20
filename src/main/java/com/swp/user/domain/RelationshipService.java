@@ -19,37 +19,37 @@ public class RelationshipService {
     @Transactional
     public void createRelationship(RelationshipRequestDto relationshipRequestDto) {
         JwtUserDetails userDetails = (JwtUserDetails) SecurityContextHolder.getContext()
-                .getAuthentication()
-                .getPrincipal();
+            .getAuthentication()
+            .getPrincipal();
         User fromUser = userRepository.findByProviderAndProviderId(userDetails.getProvider(), userDetails.getUsername())
-                .orElseThrow(() -> new UserNotFoundException("없는 유저입니다"));
+            .orElseThrow(() -> new UserNotFoundException("없는 유저입니다"));
         User toUser = userRepository.findById(relationshipRequestDto.getToUserId())
-                .orElseThrow(() -> new UserNotFoundException("팔로우할 유저를 찾을 수 없습니다."));
+            .orElseThrow(() -> new UserNotFoundException("팔로우할 유저를 찾을 수 없습니다."));
 
         if (relationshipRepository.existsByFromUserAndToUser(fromUser, toUser)) {
             throw new RelationshipConflictException("이미 해당 유저를 팔로우하고 있습니다.");
         } else {
             relationshipRepository.save(Relationship.builder()
-                    .fromUser(fromUser)
-                    .toUser(toUser)
-                    .build());
+                .fromUser(fromUser)
+                .toUser(toUser)
+                .build());
         }
     }
 
     @Transactional
     public void deleteRelationship(RelationshipRequestDto relationshipRequestDto) {
         JwtUserDetails userDetails = (JwtUserDetails) SecurityContextHolder.getContext()
-                .getAuthentication()
-                .getPrincipal();
+            .getAuthentication()
+            .getPrincipal();
         User fromUser = userRepository.findByProviderAndProviderId(userDetails.getProvider(), userDetails.getUsername())
-                .orElseThrow(() -> new UserNotFoundException("없는 유저입니다"));
+            .orElseThrow(() -> new UserNotFoundException("없는 유저입니다"));
         User toUser = userRepository.findById(relationshipRequestDto.getToUserId())
-                .orElseThrow(() -> new UserNotFoundException("팔로우 취소할 유저를 찾을 수 없습니다."));
+            .orElseThrow(() -> new UserNotFoundException("팔로우 취소할 유저를 찾을 수 없습니다."));
 
         if (relationshipRepository.existsByFromUserAndToUser(fromUser, toUser)) {
             relationshipRepository.delete(
-                    relationshipRepository.findByFromUserAndToUser(fromUser, toUser)
-                            .orElseThrow(() -> new RelationshipNotFoundException(toUser.getNickname() + "유저를 팔로우하고 있지 않습니다."))
+                relationshipRepository.findByFromUserAndToUser(fromUser, toUser)
+                    .orElseThrow(() -> new RelationshipNotFoundException(toUser.getNickname() + "유저를 팔로우하고 있지 않습니다."))
             );
         } else {
             throw new RelationshipNotFoundException("해당 유저를 팔로우하고 있지 있습니다.");
