@@ -46,13 +46,8 @@ public class RelationshipService {
         User toUser = userRepository.findById(relationshipRequestDto.getToUserId())
             .orElseThrow(() -> new UserNotFoundException("팔로우 취소할 유저를 찾을 수 없습니다."));
 
-        if (relationshipRepository.existsByFromUserAndToUser(fromUser, toUser)) {
-            relationshipRepository.delete(
-                relationshipRepository.findByFromUserAndToUser(fromUser, toUser)
-                    .orElseThrow(() -> new RelationshipNotFoundException(toUser.getNickname() + "유저를 팔로우하고 있지 않습니다."))
-            );
-        } else {
-            throw new RelationshipNotFoundException("해당 유저를 팔로우하고 있지 있습니다.");
-        }
+        Relationship relationship = relationshipRepository.findByFromUserAndToUser(fromUser, toUser)
+            .orElseThrow(() -> new RelationshipNotFoundException("해당 유저를 팔로우하고 있지 않습니다."));
+        relationshipRepository.delete(relationship);
     }
 }
