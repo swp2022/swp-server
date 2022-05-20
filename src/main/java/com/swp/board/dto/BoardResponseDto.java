@@ -13,6 +13,7 @@ import java.time.LocalDateTime;
 public class BoardResponseDto {
     private Integer boardId;
     private String nickname;
+    private String profileImage;
     // Study 내용 추가 예정
     private String content;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", locale = "Asia/Seoul")
@@ -22,6 +23,7 @@ public class BoardResponseDto {
         return BoardResponseDto.builder()
                 .boardId((board.getBoardId()))
                 .nickname(board.getUser().getNickname())
+                .profileImage(board.getUser().getProfileImage())
                 .content(board.getContent())
                 .createdAt(board.getCreatedAt())
                 .build();
