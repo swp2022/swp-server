@@ -16,6 +16,7 @@ public class BoardResponseDto {
     private String profileImage;
     // Study 내용 추가 예정
     private String content;
+    private Integer commentCount;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", locale = "Asia/Seoul")
     private LocalDateTime createdAt;
 
@@ -25,6 +26,7 @@ public class BoardResponseDto {
                 .nickname(board.getUser().getNickname())
                 .profileImage(board.getUser().getProfileImage())
                 .content(board.getContent())
+                .commentCount(board.getCommentList().size())
                 .createdAt(board.getCreatedAt())
                 .build();
     }
