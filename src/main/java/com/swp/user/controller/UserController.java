@@ -26,8 +26,8 @@ public class UserController {
 	@GetMapping
 	public UserResponseDto getUser() {
 		JwtUserDetails userDetails = (JwtUserDetails) SecurityContextHolder.getContext()
-            .getAuthentication()
-            .getPrincipal();
+                .getAuthentication()
+                .getPrincipal();
 		return userService.getUser(userDetails);
 	}
 
@@ -35,8 +35,8 @@ public class UserController {
 	@GetMapping(value = "/followers")
 	public List<UserResponseDto> getMyFollowers() {
 		JwtUserDetails userDetails = (JwtUserDetails) SecurityContextHolder.getContext()
-            .getAuthentication()
-            .getPrincipal();
+                .getAuthentication()
+                .getPrincipal();
 		return userService.getFollowers(userDetails);
 	}
 
@@ -44,8 +44,8 @@ public class UserController {
 	@GetMapping(value = "/followings")
 	public List<UserResponseDto> getMyFollowings() {
 		JwtUserDetails userDetails = (JwtUserDetails) SecurityContextHolder.getContext()
-            .getAuthentication()
-            .getPrincipal();
+                .getAuthentication()
+                .getPrincipal();
 		return userService.getFollowings(userDetails);
 	}
 
