@@ -113,7 +113,6 @@ public class BoardService {
     public List<BoardResponseDto> getFollowingUserBoard(JwtUserDetails userDetails, Pageable pageable) {
         User user = userRepository.findByProviderAndProviderId(userDetails.getProvider(), userDetails.getUsername())
                 .orElseThrow(() -> new UserNotFoundException("없는 유저입니다"));
-
         return boardRepository.findAllByUserIn(
                 user.getFollowingList().stream()
                         .map(Relationship::getToUser)
