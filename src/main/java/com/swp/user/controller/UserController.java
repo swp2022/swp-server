@@ -43,7 +43,7 @@ public class UserController {
 	@ApiOperation(value = "자신의 팔로잉 가져오기", notes = "자신**이** 팔로잉하는 사람들")
 	@GetMapping(value = "/followings")
 	public List<UserResponseDto> getMyFollowings() {
-		JwtUserDetails userDetails = (JwtUserDetails) SecurityContextHolder.getContext()
+		JwtUserDetails userDetails = (JwtUserDetails)SecurityContextHolder.getContext()
 			.getAuthentication()
 			.getPrincipal();
 		return userService.getFollowings(userDetails);
