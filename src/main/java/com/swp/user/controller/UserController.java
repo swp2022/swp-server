@@ -57,7 +57,9 @@ public class UserController {
 
 	@ApiOperation(value = "유저의 팔로잉 가져오기", notes = "유저**가** 팔로잉하는 사람들")
 	@GetMapping(value = "{userId}/followings")
-	public List<UserResponseDto> getFollowings(@PathVariable Integer userId) {
-		return userService.getFollowings(userId);
-	}
+	public List<UserResponseDto> getFollowings(@PathVariable Integer userId) { return userService.getFollowings(userId); }
+
+	@ApiOperation(value="nickname으로 유저 검색하기")
+	@GetMapping(value="/search/{nickname}")
+	public UserResponseDto getUserByNickname(@PathVariable String nickname){ return userService.getUserByNickname(nickname); }
 }
