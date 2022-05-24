@@ -25,18 +25,18 @@ public class UserController {
 	@ApiOperation("자신의 정보 가져오기")
 	@GetMapping
 	public UserResponseDto getUser() {
-		JwtUserDetails userDetails = (JwtUserDetails) SecurityContextHolder.getContext()
-				.getAuthentication()
-				.getPrincipal();
+		JwtUserDetails userDetails = (JwtUserDetails)SecurityContextHolder.getContext()
+			.getAuthentication()
+			.getPrincipal();
 		return userService.getUser(userDetails);
 	}
 
 	@ApiOperation(value = "자신의 팔로워 가져오기", notes = "자신**을** 팔로잉하는 사람들")
 	@GetMapping(value = "/followers")
 	public List<UserResponseDto> getMyFollowers() {
-		JwtUserDetails userDetails = (JwtUserDetails) SecurityContextHolder.getContext()
-				.getAuthentication()
-				.getPrincipal();
+		JwtUserDetails userDetails = (JwtUserDetails)SecurityContextHolder.getContext()
+			.getAuthentication()
+			.getPrincipal();
 		return userService.getFollowers(userDetails);
 	}
 
@@ -44,8 +44,8 @@ public class UserController {
 	@GetMapping(value = "/followings")
 	public List<UserResponseDto> getMyFollowings() {
 		JwtUserDetails userDetails = (JwtUserDetails) SecurityContextHolder.getContext()
-				.getAuthentication()
-				.getPrincipal();
+			.getAuthentication()
+			.getPrincipal();
 		return userService.getFollowings(userDetails);
 	}
 
