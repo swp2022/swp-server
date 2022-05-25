@@ -61,9 +61,9 @@ public class UserController {
 		return userService.getFollowings(userId);
 	}
 
-	@ApiOperation(value = "nickname으로 유저 검색하기")
-	@GetMapping(value = "/search/{nickname}")
-	public UserResponseDto getUserByNickname(@PathVariable String nickname) {
-		return userService.getUserByNickname(nickname);
+	@ApiOperation(value = "유저 검색하기", notes="nickname에 keyword를 포함하는 유저 검색하기")
+	@GetMapping("/search/{keyword}")
+	public List<UserResponseDto> searchUserByNickname(@PathVariable String keyword) {
+		return userService.searchUserByNickname(keyword);
 	}
 }

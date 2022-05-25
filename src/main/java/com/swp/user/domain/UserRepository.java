@@ -1,18 +1,20 @@
 package com.swp.user.domain;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 @Repository
 public interface UserRepository extends JpaRepository<User, Integer> {
 
-	Optional<User> findById(Integer id);
+    Optional<User> findById(Integer id);
 
-	Optional<User> findByProviderAndProviderId(String provider, String providerId);
+    Optional<User> findByProviderAndProviderId(String provider, String providerId);
 
-	Optional<User> findByEmail(String email);
+    Optional<User> findByEmail(String email);
 
-	Optional<User> findByNickname(String nickname);
+    List<User> findByNicknameContains(@Param("nickname") String nickname);
 }
