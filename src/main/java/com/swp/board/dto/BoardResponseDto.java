@@ -2,6 +2,7 @@ package com.swp.board.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.swp.board.domain.Board;
+import com.swp.study.dto.StudyResponseDto;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -14,7 +15,7 @@ public class BoardResponseDto {
     private Integer boardId;
     private String nickname;
     private String profileImage;
-    // Study 내용 추가 예정
+    private StudyResponseDto studyResponseDto;
     private String content;
     private Integer commentCount;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", locale = "Asia/Seoul")
@@ -25,6 +26,7 @@ public class BoardResponseDto {
                 .boardId((board.getBoardId()))
                 .nickname(board.getUser().getNickname())
                 .profileImage(board.getUser().getProfileImage())
+                .studyResponseDto(StudyResponseDto.from(board.getStudy()))
                 .content(board.getContent())
                 .commentCount(board.getCommentList().size())
                 .createdAt(board.getCreatedAt())

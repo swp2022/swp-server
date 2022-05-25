@@ -1,11 +1,13 @@
 package com.swp.study.domain;
 import com.swp.user.domain.User;
+import lombok.Getter;
 import org.springframework.data.annotation.CreatedDate;
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "studies")
+@Getter
 public class Study {
 
     @Id
