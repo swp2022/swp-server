@@ -5,4 +5,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface StudyRepository extends JpaRepository<Study, Integer> {
+	
 }
