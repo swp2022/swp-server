@@ -2,11 +2,11 @@ package com.swp.user.controller;
 
 import java.util.List;
 
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import com.swp.auth.dto.JwtUserDetails;
 import com.swp.user.domain.UserService;
@@ -60,10 +60,10 @@ public class UserController {
 	public List<UserResponseDto> getFollowings(@PathVariable Integer userId) {
 		return userService.getFollowings(userId);
 	}
-	
-	@ApiOperation(value = "유저 검색하기", notes = "nickname에 검색 대상 문자열을 포함하는 유저 검색하기")
-	@GetMapping("/search/{nickname}")
-	public List<UserResponseDto> searchUserByNickname(@PathVariable String nickname) {
-		return userService.searchUserByNickname(nickname);
-	}
+
+    @ApiOperation(value = "유저 검색하기", notes = "nickname에 검색 대상 문자열을 포함하는 유저 검색하기")
+    @GetMapping("/search/{nickname}")
+    public List<UserResponseDto> searchUserByNickname(@PathVariable String nickname, Pageable pageable) {
+        return userService.searchUserByNickname(nickname, pageable);
+    }
 }
