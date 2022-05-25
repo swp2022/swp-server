@@ -68,7 +68,7 @@ public class UserService {
 
 	@Transactional(readOnly = true)
 	public List<UserResponseDto> searchUserByNickname(String nickname, Pageable pageable) {
-		List<User> userList = userRepository.findByNicknameContains(nickname, pageable);
+		List<User> userList = userRepository.findByNicknameStartsWith(nickname, pageable);
 		return userList.stream()
 			.map(UserResponseDto::from)
 			.collect(toList());
