@@ -21,18 +21,18 @@ public class UserService {
 
 	public UserResponseDto getUser(JwtUserDetails userDetails) {
 		User user = userRepository.findByProviderAndProviderId(userDetails.getProvider(), userDetails.getUsername())
-				.orElseThrow(() -> new UserNotFoundException("없는 유저입니다"));
+			.orElseThrow(() -> new UserNotFoundException("없는 유저입니다"));
 		return UserResponseDto.from(user);
 	}
 
 	@Transactional(readOnly = true)
 	public List<UserResponseDto> getFollowers(JwtUserDetails userDetails) {
 		User user = userRepository.findByProviderAndProviderId(userDetails.getProvider(), userDetails.getUsername())
-				.orElseThrow(() -> new UserNotFoundException("없는 유저입니다"));
+			.orElseThrow(() -> new UserNotFoundException("없는 유저입니다"));
 		return user.getFollowerList().stream()
-				.map(Relationship::getFromUser)
-				.map(UserResponseDto::from)
-				.collect(toList());
+			.map(Relationship::getFromUser)
+			.map(UserResponseDto::from)
+			.collect(toList());
 	}
 
 	@Transactional(readOnly = true)
