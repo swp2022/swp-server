@@ -66,6 +66,9 @@ public class UserController {
 	@ApiOperation(value = "유저 검색하기", notes = "nickname에 검색 대상 문자열을 포함하는 유저 검색하기, page 기능 o (default size=20)")
 	@GetMapping("/search/{nickname}")
 	public List<UserResponseDto> searchUserByNickname(@PathVariable String nickname, @PageableDefault(size = 20) Pageable pageable) {
-		return userService.searchUserByNickname(nickname, pageable);
+		JwtUserDetails userDetails = (JwtUserDetails)SecurityContextHolder.getContext()
+				.getAuthentication()
+				.getPrincipal();
+		return userService.searchUserByNickname(userDetails, nickname, pageable);
 	}
 }

@@ -18,7 +18,7 @@ public class UserResponseDto {
 	private String email;
 	private String nickname;
 	private String profileImage;
-
+	private Boolean isFollowing;
 	public static UserResponseDto from(User user) {
 		return UserResponseDto.builder()
 			.userId(user.getId())
@@ -27,5 +27,15 @@ public class UserResponseDto {
 			.email(user.getEmail())
 			.profileImage(user.getProfileImage())
 			.build();
+	}
+	public static UserResponseDto from(User user,Boolean isFollowing){
+		return UserResponseDto.builder()
+				.userId(user.getId())
+				.role(user.getRole())
+				.nickname(user.getNickname())
+				.email(user.getEmail())
+				.profileImage(user.getProfileImage())
+				.isFollowing(isFollowing)
+				.build();
 	}
 }

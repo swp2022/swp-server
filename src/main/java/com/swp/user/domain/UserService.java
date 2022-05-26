@@ -19,7 +19,6 @@ import lombok.RequiredArgsConstructor;
 public class UserService {
 
 	private final UserRepository userRepository;
-
 	public UserResponseDto getUser(JwtUserDetails userDetails) {
 		User user = userRepository.findByProviderAndProviderId(userDetails.getProvider(), userDetails.getUsername())
 			.orElseThrow(() -> new UserNotFoundException("없는 유저입니다"));
@@ -67,10 +66,17 @@ public class UserService {
 	}
 
 	@Transactional(readOnly = true)
-	public List<UserResponseDto> searchUserByNickname(String nickname, Pageable pageable) {
+	public List<UserResponseDto> searchUserByNickname(JwtUserDetails userDetails, String nickname, Pageable pageable) {
 		List<User> userList = userRepository.findByNicknameStartsWith(nickname, pageable);
+		List<User> followingList = userRepository.findByProviderAndProviderId(userDetails.getProvider(), userDetails.getUsername())
+				.orElseThrow(() -> new UserNotFoundException("없는 유저입니다"))
+				.getFollowingList().stream()
+				.map(Relationship::getToUser)
+				.collect(toList());
 		return userList.stream()
-			.map(UserResponseDto::from)
+			.map(user -> {
+				return UserResponseDto.from(user, followingList.contains(user));
+			})
 			.collect(toList());
 	}
 }
