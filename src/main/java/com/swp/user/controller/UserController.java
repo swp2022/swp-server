@@ -2,6 +2,8 @@ package com.swp.user.controller;
 
 import java.util.List;
 
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -59,5 +61,14 @@ public class UserController {
 	@GetMapping(value = "{userId}/followings")
 	public List<UserResponseDto> getFollowings(@PathVariable Integer userId) {
 		return userService.getFollowings(userId);
+	}
+
+	@ApiOperation(value = "유저 검색하기", notes = "nickname에 검색 대상 문자열을 포함하는 유저 검색하기, page 기능 o (default size=20)")
+	@GetMapping("/search/{nickname}")
+	public List<UserResponseDto> searchUserByNickname(@PathVariable String nickname, @PageableDefault(size = 20) Pageable pageable) {
+		JwtUserDetails userDetails = (JwtUserDetails)SecurityContextHolder.getContext()
+				.getAuthentication()
+				.getPrincipal();
+		return userService.searchUserByNickname(userDetails, nickname, pageable);
 	}
 }
