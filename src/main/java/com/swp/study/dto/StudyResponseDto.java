@@ -23,7 +23,7 @@ public class StudyResponseDto {
 	public static StudyResponseDto from(Study study) {
 		return StudyResponseDto.builder()
 				.studyId(study.getStudyId())
-				.startAt(study.getStartAt())
+				.startAt(study.getCreatedAt())
 				.endAt(study.getEndAt())
 				.build();
 	}
