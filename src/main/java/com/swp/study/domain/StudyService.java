@@ -10,6 +10,7 @@ import com.swp.auth.dto.JwtUserDetails;
 import com.swp.study.Exception.StudyFinishedException;
 import com.swp.study.Exception.StudyNotFoundException;
 import com.swp.study.Exception.StudyUserNotMatchException;
+import com.swp.study.dto.StudyFinishDto;
 import com.swp.study.dto.StudyLogPostDto;
 import com.swp.study.dto.StudyLogResponseDto;
 import com.swp.study.dto.StudyResponseDto;
@@ -45,9 +46,9 @@ public class StudyService {
 	}
 
 	@Transactional
-	public StudyResponseDto finishStudy(JwtUserDetails userDetails, Integer studyId) {
+	public StudyResponseDto finishStudy(JwtUserDetails userDetails, Integer studyId, StudyFinishDto finishDto) {
 		Study study = getStudy(userDetails, studyId);
-		study.finishStudy();
+		study.finishStudy(finishDto.getFinalPercentage());
 		return StudyResponseDto.from(study);
 	}
 

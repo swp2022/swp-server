@@ -37,13 +37,17 @@ public class Study extends CreatedAtEntity {
 	@JoinColumn(name = "user_id", nullable = false)
 	private User user;
 
+	@Column
+	private Double finalPercentage;
+
 	@Column(name = "end_at")
 	private LocalDateTime endAt;
 
 	@OneToMany(mappedBy = "study")
 	private List<StudyLog> studyLogList = new ArrayList<>();
 
-	public void finishStudy() {
+	public void finishStudy(Double percentage) {
+		this.finalPercentage = percentage;
 		this.endAt = LocalDateTime.now();
 	}
 

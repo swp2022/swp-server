@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.swp.auth.dto.JwtUserDetails;
 import com.swp.study.domain.StudyService;
+import com.swp.study.dto.StudyFinishDto;
 import com.swp.study.dto.StudyLogPostDto;
 import com.swp.study.dto.StudyLogResponseDto;
 import com.swp.study.dto.StudyResponseDto;
@@ -42,11 +43,11 @@ public class StudyController {
 
 	@ApiOperation(value = "스터디 종료", notes = "서버 시각 기준 종료")
 	@PostMapping("/{studyId}/finish")
-	public StudyResponseDto finishStudy(@PathVariable Integer studyId) {
+	public StudyResponseDto finishStudy(@PathVariable Integer studyId, @RequestBody StudyFinishDto finishDto) {
 		JwtUserDetails userDetails = (JwtUserDetails)SecurityContextHolder.getContext()
 			.getAuthentication()
 			.getPrincipal();
-		return studyService.finishStudy(userDetails, studyId);
+		return studyService.finishStudy(userDetails, studyId, finishDto);
 	}
 
 	@ApiOperation(value = "스터디 로그 삽입", notes = "기록 시각, 집중도를 싣어야 합니다")
