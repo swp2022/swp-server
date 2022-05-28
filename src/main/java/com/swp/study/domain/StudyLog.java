@@ -1,12 +1,15 @@
 package com.swp.study.domain;
 
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
 @Entity
 @Table(name = "study_logs")
 @Getter
+@NoArgsConstructor
 public class StudyLog {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -22,4 +25,11 @@ public class StudyLog {
 
 	@Column(name = "percentage", nullable = false)
 	private Double percentage;
+
+	@Builder
+	public StudyLog(Study study, Long recordedTime, Double percentage) {
+		this.study = study;
+		this.recordedTime = recordedTime;
+		this.percentage = percentage;
+	}
 }
