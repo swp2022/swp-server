@@ -4,6 +4,7 @@ import static java.util.stream.Collectors.*;
 
 import java.util.List;
 
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,6 +20,7 @@ import lombok.RequiredArgsConstructor;
 public class UserService {
 
 	private final UserRepository userRepository;
+	private final RelationshipRepository relationshipRepository;
 	public UserResponseDto getUser(JwtUserDetails userDetails) {
 		User user = userRepository.findByProviderAndProviderId(userDetails.getProvider(), userDetails.getUsername())
 			.orElseThrow(() -> new UserNotFoundException("없는 유저입니다"));
@@ -26,47 +28,52 @@ public class UserService {
 	}
 
 	@Transactional(readOnly = true)
-	public List<UserResponseDto> getFollowers(JwtUserDetails userDetails) {
+	public List<UserResponseDto> getFollowers(JwtUserDetails userDetails, Integer size, Integer page) {
+		Pageable pageable = PageRequest.of(page, size);
 		User user = userRepository.findByProviderAndProviderId(userDetails.getProvider(), userDetails.getUsername())
 			.orElseThrow(() -> new UserNotFoundException("없는 유저입니다"));
-		return user.getFollowerList().stream()
+		return relationshipRepository.findByToUser(user, pageable).stream()
 			.map(Relationship::getFromUser)
 			.map(UserResponseDto::from)
 			.collect(toList());
 	}
 
 	@Transactional(readOnly = true)
-	public List<UserResponseDto> getFollowers(Integer userId) {
+	public List<UserResponseDto> getFollowers(Integer userId, Integer size, Integer page) {
+		Pageable pageable = PageRequest.of(page, size);
 		User user = userRepository.findById(userId)
 			.orElseThrow(() -> new UserNotFoundException("없는 유저입니다"));
-		return user.getFollowerList().stream()
+		return relationshipRepository.findByToUser(user, pageable).stream()
 			.map(Relationship::getFromUser)
 			.map(UserResponseDto::from)
 			.collect(toList());
 	}
 
 	@Transactional(readOnly = true)
-	public List<UserResponseDto> getFollowings(JwtUserDetails userDetails) {
+	public List<UserResponseDto> getFollowings(JwtUserDetails userDetails, Integer size, Integer page) {
+		Pageable pageable = PageRequest.of(page, size);
 		User user = userRepository.findByProviderAndProviderId(userDetails.getProvider(), userDetails.getUsername())
 			.orElseThrow(() -> new UserNotFoundException("없는 유저입니다"));
-		return user.getFollowingList().stream()
+		return relationshipRepository.findByFromUser(user, pageable).stream()
 			.map(Relationship::getToUser)
 			.map(UserResponseDto::from)
 			.collect(toList());
 	}
 
 	@Transactional(readOnly = true)
-	public List<UserResponseDto> getFollowings(Integer userId) {
+	public List<UserResponseDto> getFollowings(Integer userId, Integer size, Integer page) {
+		Pageable pageable = PageRequest.of(page, size);
 		User user = userRepository.findById(userId)
 			.orElseThrow(() -> new UserNotFoundException("없는 유저입니다"));
-		return user.getFollowingList().stream()
+		return relationshipRepository.findByFromUser(user, pageable).stream()
 			.map(Relationship::getToUser)
 			.map(UserResponseDto::from)
 			.collect(toList());
 	}
 
 	@Transactional(readOnly = true)
-	public List<UserResponseDto> searchUserByNickname(JwtUserDetails userDetails, String nickname, Pageable pageable) {
+	public List<UserResponseDto> searchUserByNickname(JwtUserDetails userDetails, String nickname, Integer size, Integer page) {
+		Pageable pageable = PageRequest.of(page, size);
 		List<User> userList = userRepository.findByNicknameStartsWith(nickname, pageable);
 		List<User> followingList = userRepository.findByProviderAndProviderId(userDetails.getProvider(), userDetails.getUsername())
 				.orElseThrow(() -> new UserNotFoundException("없는 유저입니다"))
