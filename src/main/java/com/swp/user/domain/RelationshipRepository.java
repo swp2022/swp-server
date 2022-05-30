@@ -7,8 +7,11 @@ import java.util.List;
 import java.util.Optional;
 
 public interface RelationshipRepository extends JpaRepository<Relationship, Integer> {
-    Optional<Relationship> findByFromUserAndToUser(User fromUser, User toUser);
-    List<Relationship> findByFromUser(User fromUser, Pageable pageable);
-    List<Relationship> findByToUser(User toUser, Pageable pageable);
-    boolean existsByFromUserAndToUser(User fromUser, User toUser);
+	Optional<Relationship> findByFromUserAndToUser(User fromUser, User toUser);
+
+	List<Relationship> findByFromUser(User fromUser, Pageable pageable);
+
+	List<Relationship> findByToUser(User toUser, Pageable pageable);
+
+	boolean existsByFromUserAndToUser(User fromUser, User toUser);
 }

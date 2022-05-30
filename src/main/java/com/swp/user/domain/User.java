@@ -1,19 +1,16 @@
 package com.swp.user.domain;
 
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.persistence.*;
-
 import com.swp.board.domain.Board;
-import com.swp.study.domain.Study;
-import com.swp.user.domain.Relationship;
 import com.swp.common.domain.CreatedAtEntity;
-
+import com.swp.study.domain.Study;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import javax.persistence.*;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "users")
@@ -51,7 +48,7 @@ public class User extends CreatedAtEntity {
 	@OneToMany(mappedBy = "fromUser", cascade = CascadeType.REMOVE, orphanRemoval = true)
 	private List<Relationship> followingList = new ArrayList<>();
 
-	@OneToMany(mappedBy="toUser", cascade = CascadeType.REMOVE, orphanRemoval = true)
+	@OneToMany(mappedBy = "toUser", cascade = CascadeType.REMOVE, orphanRemoval = true)
 	private List<Relationship> followerList = new ArrayList<>();
 
 	@OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE, orphanRemoval = true)

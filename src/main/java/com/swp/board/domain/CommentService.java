@@ -30,7 +30,7 @@ public class CommentService {
 
 	@Transactional
 	public CommentResponseDto writeComment(JwtUserDetails userDetails, Integer boardId,
-		CommentCreateRequestDto requestDto) {
+	                                       CommentCreateRequestDto requestDto) {
 		User user = userRepository.findByProviderAndProviderId(userDetails.getProvider(), userDetails.getUsername())
 			.orElseThrow(() -> new UserNotFoundException("없는 유저입니다"));
 

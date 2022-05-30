@@ -9,7 +9,7 @@ import java.util.List;
 
 @Repository
 public interface BoardRepository extends JpaRepository<Board, Integer> {
-    List<Board> findByUser(User user, Pageable pageable);
+	List<Board> findByUser(User user, Pageable pageable);
 
-    List<Board> findAllByUserIn(List<User> userList, Pageable pageable);
+	List<Board> findAllByUserIn(List<User> userList, Pageable pageable);
 }

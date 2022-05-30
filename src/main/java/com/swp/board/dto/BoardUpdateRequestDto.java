@@ -10,5 +10,5 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Getter
 public class BoardUpdateRequestDto {
-    private String content;
+	private String content;
 }
