@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -26,28 +27,19 @@ public class UserController {
 
 	@ApiOperation("자신의 정보 가져오기")
 	@GetMapping
-	public UserResponseDto getUser() {
-		JwtUserDetails userDetails = (JwtUserDetails)SecurityContextHolder.getContext()
-			.getAuthentication()
-			.getPrincipal();
+	public UserResponseDto getUser(@AuthenticationPrincipal JwtUserDetails userDetails) {
 		return userService.getUser(userDetails);
 	}
 
 	@ApiOperation(value = "자신의 팔로워 가져오기", notes = "자신**을** 팔로잉하는 사람들")
 	@GetMapping(value = "/followers")
-	public List<UserResponseDto> getMyFollowers() {
-		JwtUserDetails userDetails = (JwtUserDetails)SecurityContextHolder.getContext()
-			.getAuthentication()
-			.getPrincipal();
+	public List<UserResponseDto> getMyFollowers(@AuthenticationPrincipal JwtUserDetails userDetails) {
 		return userService.getFollowers(userDetails);
 	}
 
 	@ApiOperation(value = "자신의 팔로잉 가져오기", notes = "자신**이** 팔로잉하는 사람들")
 	@GetMapping(value = "/followings")
-	public List<UserResponseDto> getMyFollowings() {
-		JwtUserDetails userDetails = (JwtUserDetails)SecurityContextHolder.getContext()
-			.getAuthentication()
-			.getPrincipal();
+	public List<UserResponseDto> getMyFollowings(@AuthenticationPrincipal JwtUserDetails userDetails) {
 		return userService.getFollowings(userDetails);
 	}
 
@@ -65,10 +57,7 @@ public class UserController {
 
 	@ApiOperation(value = "유저 검색하기", notes = "nickname에 검색 대상 문자열을 포함하는 유저 검색하기, page 기능 o (default size=20)")
 	@GetMapping("/search/{nickname}")
-	public List<UserResponseDto> searchUserByNickname(@PathVariable String nickname, @PageableDefault(size = 20) Pageable pageable) {
-		JwtUserDetails userDetails = (JwtUserDetails)SecurityContextHolder.getContext()
-				.getAuthentication()
-				.getPrincipal();
+	public List<UserResponseDto> searchUserByNickname(@AuthenticationPrincipal JwtUserDetails userDetails, @PathVariable String nickname, @PageableDefault(size = 20) Pageable pageable) {
 		return userService.searchUserByNickname(userDetails, nickname, pageable);
 	}
 }
