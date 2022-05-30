@@ -2,6 +2,7 @@ package com.swp.study.controller;
 
 import java.util.List;
 
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -34,29 +35,20 @@ public class StudyController {
 
 	@ApiOperation(value = "스터디 생성", notes = "서버 시각 기준, 만들어진 Study Id 반환")
 	@PostMapping
-	public StudyResponseDto createStudy() {
-		JwtUserDetails userDetails = (JwtUserDetails)SecurityContextHolder.getContext()
-			.getAuthentication()
-			.getPrincipal();
+	public StudyResponseDto createStudy(@AuthenticationPrincipal JwtUserDetails userDetails) {
 		return studyService.createStudy(userDetails);
 	}
 
 	@ApiOperation(value = "스터디 종료", notes = "서버 시각 기준 종료")
 	@PostMapping("/{studyId}/finish")
-	public StudyResponseDto finishStudy(@PathVariable Integer studyId, @RequestBody StudyFinishDto finishDto) {
-		JwtUserDetails userDetails = (JwtUserDetails)SecurityContextHolder.getContext()
-			.getAuthentication()
-			.getPrincipal();
+	public StudyResponseDto finishStudy(@AuthenticationPrincipal JwtUserDetails userDetails, @PathVariable Integer studyId, @RequestBody StudyFinishDto finishDto) {
 		return studyService.finishStudy(userDetails, studyId, finishDto);
 	}
 
 	@ApiOperation(value = "스터디 로그 삽입", notes = "기록 시각, 집중도를 싣어야 합니다")
 	@PostMapping("/{studyId}/push")
-	public StudyLogResponseDto pushStudyLog(@PathVariable Integer studyId,
+	public StudyLogResponseDto pushStudyLog(@AuthenticationPrincipal JwtUserDetails userDetails, @PathVariable Integer studyId,
 		@RequestBody StudyLogPostDto studyLogPostDto) {
-		JwtUserDetails userDetails = (JwtUserDetails)SecurityContextHolder.getContext()
-			.getAuthentication()
-			.getPrincipal();
 		return studyService.pushStudyLog(userDetails, studyId, studyLogPostDto);
 	}
 }

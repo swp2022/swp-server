@@ -15,6 +15,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
@@ -40,44 +41,29 @@ public class BoardController {
     }
 
     @GetMapping(value = "/follow")
-    public List<BoardResponseDto> getFollowingBoardList(@PageableDefault(size = 20) Pageable pageable) {
-        JwtUserDetails userDetails = (JwtUserDetails) SecurityContextHolder.getContext()
-                .getAuthentication()
-                .getPrincipal();
+    public List<BoardResponseDto> getFollowingBoardList(@AuthenticationPrincipal JwtUserDetails userDetails, @PageableDefault(size = 20) Pageable pageable) {
         return boardService.getFollowingUserBoard(userDetails, pageable);
     }
 
     @GetMapping(value = "/my")
-    public List<BoardResponseDto> getMyBoardList() {
-        JwtUserDetails userDetails = (JwtUserDetails) SecurityContextHolder.getContext()
-                .getAuthentication()
-                .getPrincipal();
+    public List<BoardResponseDto> getMyBoardList(@AuthenticationPrincipal JwtUserDetails userDetails) {
         return boardService.getMyBoardList(userDetails);
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public BoardCreateResponseDto createBoard(@RequestBody BoardCreateRequestDto boardCreateRequestDto) {
-        JwtUserDetails userDetails = (JwtUserDetails) SecurityContextHolder.getContext()
-                .getAuthentication()
-                .getPrincipal();
+    public BoardCreateResponseDto createBoard(@AuthenticationPrincipal JwtUserDetails userDetails, @RequestBody BoardCreateRequestDto boardCreateRequestDto) {
         return boardService.createBoard(userDetails, boardCreateRequestDto);
     }
 
     @PutMapping(value = "/{boardId}")
-    public void updateBoard(@PathVariable Integer boardId, @RequestBody BoardUpdateRequestDto boardUpdateRequestDto) {
-        JwtUserDetails userDetails = (JwtUserDetails) SecurityContextHolder.getContext()
-                .getAuthentication()
-                .getPrincipal();
+    public void updateBoard(@AuthenticationPrincipal JwtUserDetails userDetails, @PathVariable Integer boardId, @RequestBody BoardUpdateRequestDto boardUpdateRequestDto) {
         boardService.updateBoard(userDetails, boardId, boardUpdateRequestDto);
     }
 
     @DeleteMapping(value = "/{boardId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteBoard(@PathVariable Integer boardId) {
-        JwtUserDetails userDetails = (JwtUserDetails) SecurityContextHolder.getContext()
-                .getAuthentication()
-                .getPrincipal();
+    public void deleteBoard(@AuthenticationPrincipal JwtUserDetails userDetails, @PathVariable Integer boardId) {
         boardService.deleteBoard(userDetails, boardId);
     }
 
@@ -90,21 +76,15 @@ public class BoardController {
     @ApiOperation("댓글 작성")
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/{boardId}/comment")
-    public CommentResponseDto writeComment(@PathVariable Integer boardId,
+    public CommentResponseDto writeComment(@AuthenticationPrincipal JwtUserDetails userDetails, @PathVariable Integer boardId,
         @Valid @RequestBody CommentCreateRequestDto requestDto) {
-        JwtUserDetails userDetails = (JwtUserDetails) SecurityContextHolder.getContext()
-            .getAuthentication()
-            .getPrincipal();
         return commentService.writeComment(userDetails, boardId, requestDto);
     }
 
     @ApiOperation(value = "댓글 삭제", notes = "댓글이 속한 boardId로 요청해야 합니다")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @DeleteMapping("/{boardId}/comment/{commentId}")
-    public void deleteComment(@PathVariable Integer boardId, @PathVariable Integer commentId) {
-        JwtUserDetails userDetails = (JwtUserDetails) SecurityContextHolder.getContext()
-            .getAuthentication()
-            .getPrincipal();
+    public void deleteComment(@AuthenticationPrincipal JwtUserDetails userDetails, @PathVariable Integer boardId, @PathVariable Integer commentId) {
         commentService.deleteComment(userDetails, boardId, commentId);
     }
 }
