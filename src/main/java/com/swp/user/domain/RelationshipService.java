@@ -17,10 +17,7 @@ public class RelationshipService {
     private final UserRepository userRepository;
 
     @Transactional
-    public void createRelationship(RelationshipRequestDto relationshipRequestDto) {
-        JwtUserDetails userDetails = (JwtUserDetails) SecurityContextHolder.getContext()
-            .getAuthentication()
-            .getPrincipal();
+    public void createRelationship(JwtUserDetails userDetails, RelationshipRequestDto relationshipRequestDto) {
         User fromUser = userRepository.findByProviderAndProviderId(userDetails.getProvider(), userDetails.getUsername())
             .orElseThrow(() -> new UserNotFoundException("없는 유저입니다"));
         User toUser = userRepository.findById(relationshipRequestDto.getToUserId())
@@ -37,10 +34,7 @@ public class RelationshipService {
     }
 
     @Transactional
-    public void deleteRelationship(RelationshipRequestDto relationshipRequestDto) {
-        JwtUserDetails userDetails = (JwtUserDetails) SecurityContextHolder.getContext()
-            .getAuthentication()
-            .getPrincipal();
+    public void deleteRelationship(JwtUserDetails userDetails, RelationshipRequestDto relationshipRequestDto) {
         User fromUser = userRepository.findByProviderAndProviderId(userDetails.getProvider(), userDetails.getUsername())
             .orElseThrow(() -> new UserNotFoundException("없는 유저입니다"));
         User toUser = userRepository.findById(relationshipRequestDto.getToUserId())
