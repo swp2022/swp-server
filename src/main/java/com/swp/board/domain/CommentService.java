@@ -1,12 +1,5 @@
 package com.swp.board.domain;
 
-import static java.util.stream.Collectors.*;
-
-import java.util.List;
-
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import com.swp.auth.dto.JwtUserDetails;
 import com.swp.board.dto.CommentCreateRequestDto;
 import com.swp.board.dto.CommentResponseDto;
@@ -17,8 +10,15 @@ import com.swp.user.domain.Role;
 import com.swp.user.domain.User;
 import com.swp.user.domain.UserRepository;
 import com.swp.user.exception.UserNotFoundException;
-
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+
+import static java.util.stream.Collectors.toList;
 
 @RequiredArgsConstructor
 @Service
@@ -30,7 +30,7 @@ public class CommentService {
 
 	@Transactional
 	public CommentResponseDto writeComment(JwtUserDetails userDetails, Integer boardId,
-		CommentCreateRequestDto requestDto) {
+	                                       CommentCreateRequestDto requestDto) {
 		User user = userRepository.findByProviderAndProviderId(userDetails.getProvider(), userDetails.getUsername())
 			.orElseThrow(() -> new UserNotFoundException("없는 유저입니다"));
 
@@ -68,11 +68,11 @@ public class CommentService {
 	}
 
 	@Transactional(readOnly = true)
-	public List<CommentResponseDto> getComments(Integer boardId) {
+	public List<CommentResponseDto> getComments(Integer boardId, Integer size, Integer page) {
+		Pageable pageable = PageRequest.of(page, size);
 		Board board = boardRepository.findById(boardId)
 			.orElseThrow(() -> new BoardNotFoundException("글을 찾을 수 없습니다"));
-
-		return board.getCommentList()
+		return commentRepository.findByBoard(board, pageable)
 			.stream()
 			.map(CommentResponseDto::from)
 			.collect(toList());

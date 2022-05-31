@@ -1,12 +1,11 @@
 package com.swp.board.dto;
 
-import java.time.LocalDateTime;
-
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.swp.board.domain.Comment;
-
 import lombok.Builder;
 import lombok.Data;
+
+import java.time.LocalDateTime;
 
 @Data
 @Builder

@@ -1,14 +1,15 @@
 package com.swp.board.dto;
 
-import com.swp.study.domain.Study;
-import com.swp.user.domain.User;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
 public class BoardCreateRequestDto {
-    private Integer studyId;
-    private String content;
+	private Integer studyId;
+	private String content;
 }
