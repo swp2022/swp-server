@@ -2,7 +2,6 @@ package com.swp.board.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.swp.board.domain.Comment;
-import com.swp.user.domain.User;
 import lombok.Builder;
 import lombok.Data;
 
