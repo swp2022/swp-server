@@ -14,6 +14,8 @@ public class CommentResponseDto {
 	private Integer commentId;
 	private Integer boardId;
 	private Integer userId;
+	private String nickname;
+	private String profileImage;
 	private String content;
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", locale = "Asia/Seoul")
 	private LocalDateTime createdAt;
@@ -23,6 +25,8 @@ public class CommentResponseDto {
 			.commentId(comment.getCommentId())
 			.boardId(comment.getBoard().getBoardId())
 			.userId(comment.getUser().getId())
+			.nickname(comment.getUser().getNickname())
+			.profileImage(comment.getUser().getProfileImage())
 			.content(comment.getContent())
 			.createdAt(comment.getCreatedAt())
 			.build();
