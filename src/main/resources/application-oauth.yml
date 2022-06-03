@@ -23,6 +23,6 @@ spring:
 frontend:
   redirectUri: http://localhost:3000/login/oauth2/code/kakao
   authorizedRedirectUris: >
-    http://localhost:3000/login/oauth2/code/kakao,
-    https://swp-9wp56ifkv-softwareproject2022n.vercel.app/login/oauth2/code/kakao,
-    http://swp2022.s3-website.ap-northeast-2.amazonaws.com/login/oauth2/code/kakao
+    http://localhost:3000.*,
+    https://swp-.*-softwareproject2022n.vercel.app.*
+    http://swp2022.s3-website.ap-northeast-2.amazonaws.com.*
