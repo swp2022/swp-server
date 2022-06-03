@@ -3,6 +3,7 @@ package com.swp.study.domain;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -64,6 +65,16 @@ public class StudyService {
 			.build());
 
 		return StudyLogResponseDto.from(studyLog);
+	}
+
+	public List<StudyResponseDto> getFinishedStudy(JwtUserDetails userDetails, Integer page, Integer size) {
+		User user = userRepository.findByProviderAndProviderId(userDetails.getProvider(), userDetails.getUsername())
+			.orElseThrow(() -> new UserNotFoundException("없는 유저입니다"));
+
+		PageRequest pageRequest = PageRequest.of(page, size);
+		List<Study> studies = studyRepository.findByUserAndEndAtIsNotNull(user, pageRequest);
+
+		return studies.stream().map(StudyResponseDto::from).collect(Collectors.toList());
 	}
 
 	private Study getStudy(JwtUserDetails userDetails, Integer studyId) {
