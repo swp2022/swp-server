@@ -24,5 +24,5 @@ frontend:
   redirectUri: http://localhost:3000/login/oauth2/code/kakao
   authorizedRedirectUris: >
     http://localhost:3000.*,
-    https://swp-.*-softwareproject2022n.vercel.app.*
+    https://swp-.*-softwareproject2022n.vercel.app.*,
     http://swp2022.s3-website.ap-northeast-2.amazonaws.com.*
