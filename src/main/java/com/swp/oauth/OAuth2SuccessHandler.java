@@ -12,9 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.oauth2.core.user.OAuth2User;
-import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -28,7 +26,7 @@ import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 @Component
-public class OAuth2ResultHandler implements AuthenticationSuccessHandler, AuthenticationFailureHandler {
+public class OAuth2SuccessHandler implements AuthenticationSuccessHandler {
 
 	private static final String PROVIDER_KEY = "provider";
 	@Value("${frontend.redirectUri}")
@@ -45,24 +43,6 @@ public class OAuth2ResultHandler implements AuthenticationSuccessHandler, Authen
 		String targetUrl = getTargetUrl(request, oAuth2User);
 		requestRepository.removeAuthorizationRequestCookies(request, response);
 		response.sendRedirect(targetUrl);
-	}
-
-	@Override
-	public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response,
-		AuthenticationException exception) throws IOException, ServletException {
-		String targetUrl = getTargetUrl(request);
-		requestRepository.removeAuthorizationRequestCookies(request, response);
-		response.sendRedirect(targetUrl);
-	}
-
-	private String getTargetUrl(HttpServletRequest request) {
-		Optional<String> redirectUri = CookieUtils.getCookie(request,
-			CookieOAuth2AuthorizationRequestRepository.REDIRECT_URI_PARAM_COOKIE_NAME).map(Cookie::getValue);
-
-		if (redirectUri.isPresent() && isAuthorizedPattern(redirectUri)) {
-			return UriComponentsBuilder.fromUriString(redirectUri.get()).build().toUriString();
-		}
-		return REDIRECTION_URI;
 	}
 
 	private String getTargetUrl(HttpServletRequest request, OAuth2User oAuth2User) {
