@@ -1,7 +1,6 @@
 package com.swp.oauth;
 
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.Optional;
 
 import javax.servlet.ServletException;
@@ -25,8 +24,6 @@ public class OAuth2FailureHandler implements AuthenticationFailureHandler {
 
 	@Value("${frontend.redirectUri}")
 	private String REDIRECTION_URI;
-	@Value("${frontend.authorizedRedirectUris}")
-	private String[] AUTHORIZED_URIS;
 
 	private final CookieOAuth2AuthorizationRequestRepository requestRepository;
 
@@ -42,10 +39,8 @@ public class OAuth2FailureHandler implements AuthenticationFailureHandler {
 		Optional<String> redirectUri = CookieUtils.getCookie(request,
 			CookieOAuth2AuthorizationRequestRepository.REDIRECT_URI_PARAM_COOKIE_NAME).map(Cookie::getValue);
 
-		if (redirectUri.isPresent() && redirectUri.stream()
-			.anyMatch(uri -> Arrays.asList(AUTHORIZED_URIS).contains(uri))) {
-			return UriComponentsBuilder.fromUriString(redirectUri.get()).build().toUriString();
-		}
-		return REDIRECTION_URI;
+		return redirectUri
+			.map(uri -> UriComponentsBuilder.fromUriString(uri).build().toUriString())
+			.orElseGet(() -> REDIRECTION_URI);
 	}
 }

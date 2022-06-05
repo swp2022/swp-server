@@ -3,6 +3,7 @@ package com.swp.oauth;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Optional;
+import java.util.regex.Pattern;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.Cookie;
@@ -54,8 +55,7 @@ public class OAuth2SuccessHandler implements AuthenticationSuccessHandler {
 			CookieOAuth2AuthorizationRequestRepository.REDIRECT_URI_PARAM_COOKIE_NAME).map(Cookie::getValue);
 		String redirectUri = REDIRECTION_URI;
 
-		if (cookieRedirectUri.isPresent() && cookieRedirectUri.stream()
-			.anyMatch(uri -> Arrays.asList(AUTHORIZED_URIS).contains(uri))) {
+		if (cookieRedirectUri.isPresent() && isAuthorizedPattern(cookieRedirectUri)) {
 			redirectUri = cookieRedirectUri.get();
 		}
 		return UriComponentsBuilder.fromUriString(redirectUri)
@@ -63,5 +63,11 @@ public class OAuth2SuccessHandler implements AuthenticationSuccessHandler {
 			.queryParam("refreshToken", token.getRefreshToken())
 			.build()
 			.toUriString();
+	}
+
+	private boolean isAuthorizedPattern(Optional<String> cookieRedirectUri) {
+		return cookieRedirectUri.stream()
+			.anyMatch(uri -> Arrays.stream(AUTHORIZED_URIS)
+				.anyMatch(authorizedUri -> Pattern.matches(authorizedUri, uri)));
 	}
 }
