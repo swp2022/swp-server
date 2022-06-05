@@ -18,6 +18,7 @@ import com.swp.user.exception.UserNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -108,7 +109,7 @@ public class BoardService {
 		Pageable pageable = PageRequest.of(page, size);
 		User user = userRepository.findByProviderAndProviderId(userDetails.getProvider(), userDetails.getUsername())
 			.orElseThrow(() -> new UserNotFoundException("없는 유저입니다"));
-		return boardRepository.findByUser(user, pageable).stream()
+		return boardRepository.findByUserOrderByCreatedAtDesc(user, pageable).stream()
 			.map(board -> BoardResponseDto.from(board))
 			.collect(toList());
 	}
