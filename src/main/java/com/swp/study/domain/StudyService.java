@@ -72,7 +72,7 @@ public class StudyService {
 			.orElseThrow(() -> new UserNotFoundException("없는 유저입니다"));
 
 		PageRequest pageRequest = PageRequest.of(page, size);
-		List<Study> studies = studyRepository.findByUserAndEndAtIsNotNull(user, pageRequest);
+		List<Study> studies = studyRepository.findByUserAndEndAtIsNotNullOrderByCreatedAtDesc(user, pageRequest);
 
 		return studies.stream().map(StudyResponseDto::from).collect(Collectors.toList());
 	}

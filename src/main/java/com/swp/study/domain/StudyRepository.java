@@ -11,5 +11,5 @@ import com.swp.user.domain.User;
 @Repository
 public interface StudyRepository extends JpaRepository<Study, Integer> {
 
-	List<Study> findByUserAndEndAtIsNotNull(User user, Pageable pageable);
+	List<Study> findByUserAndEndAtIsNotNullOrderByCreatedAtDesc(User user, Pageable pageable);
 }
